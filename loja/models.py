@@ -27,15 +27,22 @@ class ItemAdicional(models.Model):
 
 
 class GrupoOpcao(models.Model):
-    nome = models.CharField(max_length=100, help_text="Ex: Complementos 500ml, Caldas, Extras Pagos")
-    qtd_minima = models.IntegerField(default=0, help_text="Mínimo de itens obrigatórios")
-    qtd_maxima = models.IntegerField(default=1, help_text="Limite máximo de itens no padrão/grátis")
-    permitir_exceder = models.BooleanField(default=False, help_text="Permite o cliente marcar itens além da qtd_maxima?")
+    nome = models.CharField(max_length=100, help_text="Ex: Escolha até 3 adicionais, Caldas, etc.")
+    qtd_minima = models.IntegerField(default=0, help_text="Mínimo de itens obrigatórios neste grupo")
+    qtd_maxima = models.IntegerField(default=1, help_text="Máximo de itens inclusos/permitidos no grupo")
+    permitir_exceder = models.BooleanField(
+        default=False, 
+        help_text="Se marcado, permite ao cliente selecionar mais itens que a qtd_maxima cobrando valor extra"
+    )
     preco_item_excedente = models.DecimalField(
         max_digits=6, 
         decimal_places=2, 
-        default=1.00, 
-        help_text="Valor cobrado por cada item selecionado acima da qtd_maxima"
+        default=0.00, 
+        help_text="Preço cobrado por CADA item adicional que ultrapassar a qtd_maxima"
+    )
+    limite_excedente = models.IntegerField(
+        default=0,
+        help_text="Quantidade MÁXIMA de itens EXTRAS que o cliente pode adicionar além da qtd_maxima (ex: 2 para permitir no máximo +2 extras)"
     )
 
     class Meta:
@@ -43,8 +50,7 @@ class GrupoOpcao(models.Model):
         verbose_name_plural = 'Grupos de Opções'
 
     def __str__(self):
-        return f"{self.nome} (Máx: {self.qtd_maxima})"
-
+        return self.nome
 
 class ItemGrupoOpcao(models.Model):
     grupo = models.ForeignKey(GrupoOpcao, on_delete=models.CASCADE, related_name='itens_relacionados')
