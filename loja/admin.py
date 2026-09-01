@@ -23,11 +23,23 @@ class ItemAdicionalAdmin(admin.ModelAdmin):
 
 @admin.register(GrupoOpcao)
 class GrupoOpcaoAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'qtd_minima', 'qtd_maxima', 'permitir_exceder', 'preco_item_excedente')
-    list_editable = ('qtd_minima', 'qtd_maxima', 'permitir_exceder', 'preco_item_excedente')
+    list_display = (
+        'nome', 
+        'qtd_minima', 
+        'qtd_maxima', 
+        'permitir_exceder', 
+        'preco_item_excedente',
+        'limite_excedente'
+    )
+    list_editable = (
+        'qtd_minima', 
+        'qtd_maxima', 
+        'permitir_exceder', 
+        'preco_item_excedente',
+        'limite_excedente'
+    )
     search_fields = ('nome',)
     inlines = [ItemGrupoOpcaoInline]
-
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
