@@ -30,9 +30,9 @@ class GrupoOpcaoSerializer(serializers.ModelSerializer):
             'qtd_maxima', 
             'permitir_exceder', 
             'preco_item_excedente', 
+            'limite_excedente', 
             'itens'
         ]
-
 
 class ProdutoSerializer(serializers.ModelSerializer):
     grupos_opcoes = GrupoOpcaoSerializer(many=True, read_only=True)
