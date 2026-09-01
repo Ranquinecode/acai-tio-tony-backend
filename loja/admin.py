@@ -1,5 +1,12 @@
 from django.contrib import admin
-from .models import Categoria, ItemAdicional, GrupoOpcao, Produto, Pedido
+from .models import Categoria, ItemAdicional, GrupoOpcao, ItemGrupoOpcao, Produto, Pedido
+
+
+class ItemGrupoOpcaoInline(admin.TabularInline):
+    model = ItemGrupoOpcao
+    extra = 1
+    autocomplete_fields = ['item']
+
 
 @admin.register(Categoria)
 class CategoriaAdmin(admin.ModelAdmin):
@@ -10,23 +17,32 @@ class CategoriaAdmin(admin.ModelAdmin):
 
 @admin.register(ItemAdicional)
 class ItemAdicionalAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'preco')
-    list_editable = ('preco',)
+    list_display = ('nome',)
     search_fields = ('nome',)
 
 
 @admin.register(GrupoOpcao)
 class GrupoOpcaoAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'qtd_minima', 'qtd_maxima')
-    filter_horizontal = ('itens',)
+    list_display = ('nome', 'qtd_minima', 'qtd_maxima', 'permitir_exceder', 'preco_item_excedente')
+    list_editable = ('qtd_minima', 'qtd_maxima', 'permitir_exceder', 'preco_item_excedente')
+    search_fields = ('nome',)
+    inlines = [ItemGrupoOpcaoInline]
 
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'categoria', 'preco_base', 'preco_camada_extra', 'ativo')
-    list_filter = ('categoria', 'ativo')
-    list_editable = ('preco_base', 'preco_camada_extra', 'ativo')
-    search_fields = ('nome',)
+    list_display = (
+        'nome', 
+        'categoria', 
+        'preco_base', 
+        'preco_camada_extra', 
+        'eh_customizavel', 
+        'eh_combo', 
+        'ativo'
+    )
+    list_filter = ('categoria', 'eh_customizavel', 'eh_combo', 'ativo')
+    list_editable = ('preco_base', 'preco_camada_extra', 'eh_customizavel', 'eh_combo', 'ativo')
+    search_fields = ('nome', 'descricao')
     filter_horizontal = ('grupos_opcoes',)
 
 
