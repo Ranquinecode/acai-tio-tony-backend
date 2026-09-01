@@ -88,3 +88,39 @@ MERCADOPAGO_ACCESS_TOKEN = os.environ.get('MERCADOPAGO_ACCESS_TOKEN', '')
 CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME', '')
 CLOUDINARY_API_KEY = os.environ.get('CLOUDINARY_API_KEY', '')
 CLOUDINARY_API_SECRET = os.environ.get('CLOUDINARY_API_SECRET', '')
+
+# Configuração do WhiteNoise para produção
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Personalização Visual do Jazzmin (Admin Açaí do Tio Tony)
+JAZZMIN_SETTINGS = {
+    "site_title": "Painel Tio Tony",
+    "site_header": "Açaí do Tio Tony",
+    "site_brand": "Açaí do Tio Tony",
+    "welcome_sign": "Bem-vindo ao Gestor de Pedidos e Produtos",
+    "copyright": "Açaí do Tio Tony Ltd",
+    "search_model": ["loja.produto"],
+    "topmenu_links": [
+        {"name": "Ver Site", "url": "https://acai-tio-tony-frontend.vercel.app", "new_window": True},
+    ],
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "icons": {
+        "auth": "fas fontawesome-user",
+        "auth.user": "fas fontawesome-user",
+        "loja.categoria": "fas fontawesome-list",
+        "loja.produto": "fas fontawesome-wine-glass-alt",
+        "loja.grupoopcao": "fas fontawesome-plus-circle",
+        "loja.itemadicional": "fas fontawesome-cookie-bite",
+        "loja.pedido": "fas fontawesome-shopping-cart",
+    },
+    "default_icon_parents": "fas fontawesome-folder",
+    "default_icon_children": "fas fontawesome-circle",
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar": "navbar-dark bg-purple",
+    "theme": "flatly",
+    "sidebar": "sidebar-dark-purple",
+    "accent": "accent-warning",
+}
