@@ -1,9 +1,12 @@
-from django.urls import path
-from django.http import JsonResponse
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import CategoriaViewSet, ProdutoViewSet, PedidoViewSet
 
-def status_api(request):
-    return JsonResponse({"status": "API Ativa", "versao": "1.0"})
+router = DefaultRouter()
+router.register(r'categorias', CategoriaViewSet)
+router.register(r'produtos', ProdutoViewSet)
+router.register(r'pedidos', PedidoViewSet)
 
 urlpatterns = [
-    path('', status_api),
+    path('', include(router.urls)),
 ]
