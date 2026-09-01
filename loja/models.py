@@ -5,15 +5,25 @@ class Categoria(models.Model):
     ordem = models.IntegerField(default=0)
     ativo = models.BooleanField(default=True)
 
+    class Meta:
+        ordering = ['ordem', 'nome']
+
     def __str__(self):
         return self.nome
+
 
 class ItemAdicional(models.Model):
     nome = models.CharField(max_length=100)
     preco = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
 
+    class Meta:
+        verbose_name = 'Item Adicional'
+        verbose_name_plural = 'Itens Adicionais'
+        ordering = ['nome']
+
     def __str__(self):
-        return f"{self.nome} - R$ {self.preco}"
+        return f"{self.nome} (R$ {self.preco})" if self.preco > 0 else self.nome
+
 
 class GrupoOpcao(models.Model):
     nome = models.CharField(max_length=100)
@@ -21,11 +31,16 @@ class GrupoOpcao(models.Model):
     qtd_maxima = models.IntegerField(default=1)
     itens = models.ManyToManyField(ItemAdicional)
 
+    class Meta:
+        verbose_name = 'Grupo de Opções'
+        verbose_name_plural = 'Grupos de Opções'
+
     def __str__(self):
-        return self.nome
+        return f"{self.nome} (Min: {self.qtd_minima} / Máx: {self.qtd_maxima})"
+
 
 class Produto(models.Model):
-    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name='produtos')
     nome = models.CharField(max_length=100)
     preco_base = models.DecimalField(max_digits=6, decimal_places=2)
     preco_camada_extra = models.DecimalField(max_digits=6, decimal_places=2, default=2.00)
@@ -34,7 +49,8 @@ class Produto(models.Model):
     ativo = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.nome
+        return f"{self.nome} - R$ {self.preco_base}"
+
 
 class Pedido(models.Model):
     nome_cliente = models.CharField(max_length=100)
@@ -48,5 +64,8 @@ class Pedido(models.Model):
     mercado_pago_id = models.CharField(max_length=100, blank=True)
     criado_em = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-criado_em']
+
     def __str__(self):
-        return f"Pedido #{self.id} - {self.nome_cliente}"
+        return f"Pedido #{self.id} - {self.nome_cliente} ({self.status})"
