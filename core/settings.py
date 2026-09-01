@@ -119,8 +119,22 @@ JAZZMIN_SETTINGS = {
 }
 
 JAZZMIN_UI_TWEAKS = {
-    "navbar": "navbar-dark bg-purple",
-    "theme": "flatly",
-    "sidebar": "sidebar-dark-purple",
-    "accent": "accent-warning",
+    "theme": "pulse",                  # Tema base suave em tons de lilás/roxo claro
+    "dark_mode_theme": None,
+    "navbar": "navbar-dark bg-indigo",  # Barra superior em roxo açaí
+    "navbar_small_text": False,
+    "sidebar": "sidebar-light-indigo", # Menu lateral em fundo claro com destaques roxos
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": True,
+    "sidebar_nav_compact_style": False,
+    "accent": "accent-warning",        # Detalhes em tom Dourado/Âmbar
+    "button_classes": {
+        "primary": "btn-outline-primary",
+        "secondary": "btn-outline-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    }
 }
