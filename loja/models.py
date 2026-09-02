@@ -166,3 +166,36 @@ class Pedido(models.Model):
 
     def __str__(self):
         return f"Pedido #{self.id} - {self.nome_cliente} ({self.status})"
+
+# Adicione este novo modelo ao seu loja/models.py
+
+class ItemCombo(models.Model):
+    combo = models.ForeignKey(
+        'Produto', 
+        on_delete=models.CASCADE, 
+        related_name='itens_combo',
+        help_text="O produto principal marcado como eh_combo=True"
+    )
+    produto_conteudo = models.ForeignKey(
+        'Produto', 
+        on_delete=models.CASCADE, 
+        related_name='presente_em_combos',
+        verbose_name="Produto Incluído",
+        help_text="Selecione um produto existente (ex: Copo 330ml) que fará parte deste combo."
+    )
+    quantidade = models.PositiveIntegerField(
+        default=1, 
+        help_text="Quantas unidades deste produto vêm no combo (ex: 2 para 2 copos de 330ml)"
+    )
+    ordem = models.PositiveIntegerField(
+        default=1, 
+        help_text="Ordem de personalização no frontend (1 = Copo 1, 2 = Copo 2, etc.)"
+    )
+
+    class Meta:
+        verbose_name = 'Item do Combo'
+        verbose_name_plural = 'Itens do Combo'
+        ordering = ['ordem']
+
+    def __str__(self):
+        return f"{self.quantidade}x {self.produto_conteudo.nome} no combo {self.combo.nome}"
