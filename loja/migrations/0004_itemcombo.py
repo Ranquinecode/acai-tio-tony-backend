@@ -5,7 +5,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('loja', '0003_cloudinary_fields.py'), # Ou o nome da sua última migração que está na pasta
+        ('loja', '0003_cloudinary_fields'), # Ou o nome da sua última migração que está na pasta
     ]
 
     operations = [
