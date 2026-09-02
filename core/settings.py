@@ -57,14 +57,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi'
 
-# Banco de dados Neon.tech via DATABASE_URL
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL', ''),
-        conn_max_age=600,
-        ssl_require=True
-    )
-}
+# Banco de dados Neon.tech via DATABASE_URL com fallback para SQLite local se não houver variável
+DATABASE_URL_ENV = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL_ENV:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL_ENV,
+            conn_max_age=600,
+            ssl_require=True
+        )
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -80,8 +90,6 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-# Mantido vazio para que o Django use apenas a pasta estática das aplicações e evite duplicações
 STATICFILES_DIRS = []
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -98,10 +106,15 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
 }
 
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
-# Desativa o pós-processamento/compactação do WhiteNoise que travava nos arquivos do Jazzmin
-STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
+# Padrão Moderno de Storages do Django 4.2+
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.StaticFilesStorage",
+    },
+}
 
 # Personalização Visual do Jazzmin (Admin Açaí do Tio Tony)
 JAZZMIN_SETTINGS = {
@@ -123,11 +136,11 @@ JAZZMIN_SETTINGS = {
         "loja.produto": "fas fa-wine-glass-alt",
         "loja.grupoopcao": "fas fa-plus-circle",
         "loja.itemadicional": "fas fa-cookie-bite",
+        "loja.itemcombo": "fas fa-cubes",
         "loja.pedido": "fas fa-shopping-cart",
     },
     "default_icon_parents": "fas fa-folder",
     "default_icon_children": "fas fa-circle",
-    # Mapeamento com o namespace 'loja' para evitar colisão com o pacote Jazzmin
     "custom_css": "loja/css/custom_admin.css",
     "custom_js": "loja/js/custom_admin.js",
 }
