@@ -1,6 +1,45 @@
 document.addEventListener('DOMContentLoaded', function () {
+
     // ==========================================
-    // 1. LÓGICA DE GRUPO DE OPÇÃO (EXCEDENTES)
+    // 1. REORDENAÇÃO & LÓGICA DO COMBO (PRODUTO)
+    // ==========================================
+    const comboCheckbox = document.querySelector('#id_eh_combo');
+    const comboGroup = document.querySelector('.item-combo-inline-group');
+
+    if (comboCheckbox && comboGroup) {
+        // Localiza a seção 'Preços e Tipo de Produto' (fieldset ou div de formulário)
+        const fieldsets = document.querySelectorAll('fieldset, .form-group');
+        let precosSection = null;
+
+        fieldsets.forEach(fieldset => {
+            if (fieldset.innerText && fieldset.innerText.includes('Preços e Tipo de Produto')) {
+                precosSection = fieldset;
+            }
+        });
+
+        // Se encontrar a seção de preços, move a tabela de combos para ficar LOGO ABAIXO dela
+        if (precosSection) {
+            precosSection.parentNode.insertBefore(comboGroup, precosSection.nextSibling);
+        }
+
+        // Função para mostrar/ocultar a tabela de itens do combo
+        function toggleComboFields() {
+            if (comboCheckbox.checked) {
+                comboGroup.style.display = '';
+            } else {
+                comboGroup.style.display = 'none';
+            }
+        }
+
+        // Aplica no carregamento inicial da página
+        toggleComboFields();
+
+        // Escuta mudanças na caixinha "É combo"
+        comboCheckbox.addEventListener('change', toggleComboFields);
+    }
+
+    // ==========================================
+    // 2. LÓGICA DE GRUPO DE OPÇÃO (EXCEDENTES)
     // ==========================================
 
     // Formulário de Edição (Tela individual de GrupoOpcao)
@@ -40,25 +79,4 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ==========================================
-    // 2. LÓGICA DE PRODUTO (ITENS DO COMBO)
-    // ==========================================
-
-    const comboCheckbox = document.querySelector('#id_eh_combo');
-    const comboGroup = document.querySelector('.item-combo-inline-group');
-
-    function toggleComboFields() {
-        if (!comboCheckbox || !comboGroup) return;
-
-        if (comboCheckbox.checked) {
-            comboGroup.style.display = '';
-        } else {
-            comboGroup.style.display = 'none';
-        }
-    }
-
-    if (comboCheckbox) {
-        toggleComboFields();
-        comboCheckbox.addEventListener('change', toggleComboFields);
-    }
 });
