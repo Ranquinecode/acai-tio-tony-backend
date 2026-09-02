@@ -57,7 +57,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi'
 
-# Banco de dados Neon.tech via DATABASE_URL com fallback para SQLite local se não houver variável
+# Banco de dados Neon.tech via DATABASE_URL com fallback para SQLite local
 DATABASE_URL_ENV = os.environ.get('DATABASE_URL')
 
 if DATABASE_URL_ENV:
@@ -92,6 +92,12 @@ STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = []
 
+# Garante a busca dos arquivos estáticos na pasta de cada APP (ex: loja/static)
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -116,7 +122,7 @@ STORAGES = {
     },
 }
 
-# Personalização Visual do Jazzmin (Admin Moderno - Thony Snacks)
+# Personalização Visual do Jazzmin (Admin Moderno - Thony Snacks / Açaí do Tio Tony)
 JAZZMIN_SETTINGS = {
     "site_title": "Painel Thony Snacks",
     "site_header": "Gestão Thony Snacks",
@@ -143,7 +149,6 @@ JAZZMIN_SETTINGS = {
         "loja.itemgrupoopcao": "fas fa-link",
         "loja.itemcombo": "fas fa-boxes",
     },
-    # Ordem lógica de operação no dia a dia
     "order_with_respect_to": [
         "loja.pedido",
         "loja.produto",
@@ -154,10 +159,13 @@ JAZZMIN_SETTINGS = {
     ],
     "default_icon_parents": "fas fa-folder",
     "default_icon_children": "fas fa-circle",
-    "custom_css": "loja/css/custom_admin.css",
-    "custom_js": "loja/js/custom_admin.js",
+    
+    # Caminhos para loja/static/loja/css e loja/static/loja/js
+    "custom_css": "loja/css/admin_custom.css",
+    "custom_js": "loja/js/admin_custom.js",
+    
     "use_google_fonts_cdn": True,
-    "changeform_format": "single", # Carrega tudo em uma única tela contínua sem abas
+    "changeform_format": "single",
 }
 
 JAZZMIN_UI_TWEAKS = {
