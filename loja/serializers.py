@@ -5,7 +5,7 @@ from .models import Categoria, ItemAdicional, GrupoOpcao, ItemGrupoOpcao, Produt
 class ItemAdicionalSerializer(serializers.ModelSerializer):
     class Meta:
         model = ItemAdicional
-        fields = ['id', 'nome']
+        fields = ['id', 'nome', 'imagem_url']
 
 
 class ItemGrupoOpcaoSerializer(serializers.ModelSerializer):
