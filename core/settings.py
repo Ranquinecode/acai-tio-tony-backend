@@ -81,8 +81,10 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# CORRIGIDO: Colchete fechado corretamente
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'loja', 'static'),
+]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -127,7 +129,6 @@ JAZZMIN_SETTINGS = {
     },
     "default_icon_parents": "fas fontawesome-folder",
     "default_icon_children": "fas fontawesome-circle",
-
     "custom_css": "admin/css/responsive_admin.css",
     "custom_js": "admin/js/toggle_excedentes.js",
 }
