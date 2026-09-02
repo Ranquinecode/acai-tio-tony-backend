@@ -1,5 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // 1. Formulário de Edição (Tela individual de GrupoOpcao)
+    // ==========================================
+    // 1. LÓGICA DE GRUPO DE OPÇÃO (EXCEDENTES)
+    // ==========================================
+
+    // Formulário de Edição (Tela individual de GrupoOpcao)
     const permitirForm = document.querySelector('#id_permitir_exceder');
     const fieldPreco = document.querySelector('.field-preco_item_excedente');
     const fieldLimite = document.querySelector('.field-limite_excedente');
@@ -16,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
         permitirForm.addEventListener('change', toggleFormFields);
     }
 
-    // 2. Tabela de Listagem do Admin (Desktop e Mobile com list_editable)
+    // Tabela de Listagem do Admin (Desktop e Mobile com list_editable)
     const rows = document.querySelectorAll('#result_list tbody tr');
     rows.forEach(row => {
         const checkbox = row.querySelector('.field-permitir_exceder input[type="checkbox"]');
@@ -35,4 +39,26 @@ document.addEventListener('DOMContentLoaded', function () {
             checkbox.addEventListener('change', toggleRowCells);
         }
     });
+
+    // ==========================================
+    // 2. LÓGICA DE PRODUTO (ITENS DO COMBO)
+    // ==========================================
+
+    const comboCheckbox = document.querySelector('#id_eh_combo');
+    const comboGroup = document.querySelector('.item-combo-inline-group');
+
+    function toggleComboFields() {
+        if (!comboCheckbox || !comboGroup) return;
+
+        if (comboCheckbox.checked) {
+            comboGroup.style.display = '';
+        } else {
+            comboGroup.style.display = 'none';
+        }
+    }
+
+    if (comboCheckbox) {
+        toggleComboFields();
+        comboCheckbox.addEventListener('change', toggleComboFields);
+    }
 });
