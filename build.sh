@@ -8,8 +8,12 @@ pip install -r requirements.txt
 echo "🧹 Limpando arquivos estáticos antigos..."
 rm -rf staticfiles
 
-echo "🗄️ Aplicando migrações no banco Neon.tech..."
-python manage.py migrate --fake-initial --noinput
+echo "🗄️ Sincronizando o estado das migrações com o Neon.tech..."
+# Marca a migração 0005 como concluída no banco sem tentar re-criar a tabela
+python manage.py migrate loja 0005 --fake
+
+# Garante que todo o resto esteja atualizado
+python manage.py migrate --noinput
 
 echo "🎨 Coletando arquivos estáticos..."
 python manage.py collectstatic --no-input
