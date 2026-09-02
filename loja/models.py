@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from cloudinary.models import CloudinaryField
 
 
@@ -16,6 +17,19 @@ class Categoria(models.Model):
         return self.nome
 
 
+class CategoriaItemAdicional(models.Model):
+    nome = models.CharField(max_length=100, help_text="Ex: Frutas, Cremes, Coberturas, Chocolates, etc.")
+    ordem = models.IntegerField(default=0, help_text="Ordem de exibição nas opções (1 vem primeiro)")
+
+    class Meta:
+        ordering = ['ordem', 'nome']
+        verbose_name = 'Categoria de Adicional'
+        verbose_name_plural = 'Categorias de Adicionais'
+
+    def __str__(self):
+        return self.nome
+
+
 class ItemAdicional(models.Model):
     STATUS_DISPONIBILIDADE = (
         ('disponivel', 'Disponível'),
@@ -24,6 +38,15 @@ class ItemAdicional(models.Model):
     )
 
     nome = models.CharField(max_length=100)
+    categoria_item = models.ForeignKey(
+        CategoriaItemAdicional,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='itens',
+        verbose_name="Categoria do Adicional",
+        help_text="Selecione o grupo (ex: Frutas, Cremes, Coberturas) para organizar no cardápio."
+    )
     imagem = CloudinaryField(
         'imagem', 
         blank=True, 
@@ -40,7 +63,7 @@ class ItemAdicional(models.Model):
     class Meta:
         verbose_name = 'Item Adicional / Opção'
         verbose_name_plural = 'Itens Adicionais / Opções'
-        ordering = ['nome']
+        ordering = ['categoria_item__ordem', 'nome']
 
     @property
     def imagem_url(self):
@@ -50,7 +73,8 @@ class ItemAdicional(models.Model):
 
     def __str__(self):
         status_txt = f" [{self.get_disponibilidade_display()}]" if self.disponibilidade != 'disponivel' else ""
-        return f"{self.nome}{status_txt}"
+        cat_txt = f" ({self.categoria_item.nome})" if self.categoria_item else ""
+        return f"{self.nome}{cat_txt}{status_txt}"
 
 
 class GrupoOpcao(models.Model):
@@ -95,6 +119,23 @@ class GrupoOpcao(models.Model):
     class Meta:
         verbose_name = 'Grupo de Opções'
         verbose_name_plural = 'Grupos de Opções'
+
+    def clean(self):
+        super().clean()
+        if self.qtd_minima > self.qtd_maxima:
+            raise ValidationError({
+                'qtd_minima': 'A quantidade mínima de escolhas não pode ser maior que a quantidade máxima.'
+            })
+        
+        if self.permitir_exceder:
+            if self.preco_item_excedente <= 0:
+                raise ValidationError({
+                    'preco_item_excedente': 'Ao permitir exceder itens, informe o valor a ser cobrado por cada item excedente.'
+                })
+            if self.limite_excedente <= 0:
+                raise ValidationError({
+                    'limite_excedente': 'Ao permitir exceder itens, informe o limite máximo de excedentes permitidos.'
+                })
 
     def __str__(self):
         obrigatorio = "Obrigatório" if self.qtd_minima > 0 else "Opcional"
