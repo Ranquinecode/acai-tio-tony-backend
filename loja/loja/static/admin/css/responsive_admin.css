@@ -1,0 +1,30 @@
+/* Correção de Responsividade para Autocomplete / Select2 no Django Admin Mobile */
+.select2-container {
+    width: 100% !important;
+    min-width: 180px !important;
+}
+
+.select2-container .select2-selection--single {
+    height: 38px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.select2-container--admin .select2-selection--single .select2-selection__rendered {
+    white-space: normal !important;
+    word-break: break-word !important;
+    padding-left: 8px !important;
+    padding-right: 20px !important;
+}
+
+/* Garante que tabelas inlines não espremam as colunas no celular */
+@media (max-width: 768px) {
+    .inline-group td.field-item {
+        min-width: 160px !important;
+    }
+    
+    .select2-dropdown {
+        width: 100% !important;
+        max-width: 90vw !important;
+    }
+}
