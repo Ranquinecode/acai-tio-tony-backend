@@ -5,10 +5,11 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('loja', '0003_cloudinary_fields'), # Ou o nome da sua última migração que está na pasta
+        ('loja', '0003_cloudinary_fields'),
     ]
 
     operations = [
+        # Garante a criação da tabela caso ela não exista
         migrations.CreateModel(
             name='ItemCombo',
             fields=[
@@ -21,5 +22,11 @@ class Migration(migrations.Migration):
                 'verbose_name': 'Item do Combo',
                 'verbose_name_plural': 'Itens do Combo',
             },
+        ),
+        # Adiciona a coluna 'ordem' que estava faltando na tabela do banco
+        migrations.AddField(
+            model_name='itemcombo',
+            name='ordem',
+            field=models.PositiveIntegerField(default=0, verbose_name='Ordem de exibição'),
         ),
     ]
