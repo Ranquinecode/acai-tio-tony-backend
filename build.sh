@@ -8,11 +8,11 @@ pip install -r requirements.txt
 echo "🧹 Limpando arquivos estáticos antigos..."
 rm -rf staticfiles
 
-echo "📝 Gerando arquivos de migração pendentes..."
-python manage.py makemigrations --noinput
+echo "📝 Gerando arquivos de migração limpos..."
+python manage.py makemigrations loja --noinput
 
-echo "🗄️ Aplicando migrações no banco..."
-python manage.py migrate --noinput
+echo "🗄️ Aplicando migrações com fake-initial..."
+python manage.py migrate --fake-initial --noinput
 
 echo "👤 Criando superusuário admin (se não existir)..."
 python -c "import os, django; os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings'); django.setup(); from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='admin').exists() or User.objects.create_superuser('admin', 'admin@email.com', 'Admin123456')"
