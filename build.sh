@@ -1,17 +1,21 @@
 #!/usr/bin/env bash
-# exit on error
+# Interrompe a execução imediatamente se qualquer comando falhar
 set -o errexit
 
+echo "📦 Instalando dependências..."
+pip install --upgrade pip
 pip install -r requirements.txt
 
-# Remove o cache de arquivos estáticos de builds anteriores para evitar conflitos
+echo "🧹 Limpando arquivos estáticos antigos..."
 rm -rf staticfiles
 
-# Gera o arquivo de migração se houver alterações no models.py
-python manage.py makemigrations
+echo "📝 Gerando migrações para alterações nos models..."
+python manage.py makemigrations loja --noinput
 
-# Aplica as migrações no banco Neon.tech
-python manage.py migrate
+echo "🗄️ Aplicando migrações no banco Neon.tech..."
+python manage.py migrate --noinput
 
-# Coleta os arquivos estáticos sem conflito
+echo "🎨 Coletando arquivos estáticos..."
 python manage.py collectstatic --no-input
+
+echo "✅ Build concluído com sucesso!"
