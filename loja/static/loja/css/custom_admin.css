@@ -1,112 +1,114 @@
 /* ==========================================================================
-   Responsividade do Autocomplete / Select2 no Mobile
+   1. LIMPEZA DOS CARDS E ESTRUTURA JAZZMIN (Inlines)
    ========================================================================== */
 
+/* Remove bordas grossas, sombras duplas e fundos escuros do Jazzmin nos inlines */
+.inline-group .card,
+.inline-group .card-secondary,
+.inline-group .card-outline {
+    border: none !important;
+    box-shadow: none !important;
+    background-color: #f8fafc !important; /* Fundo cinza bem suave para agrupar */
+    margin-bottom: 12px !important;
+    border-radius: 8px !important;
+}
+
+/* Remove as linhas e bordas pesadas dos cabeçalhos do Jazzmin (ex: Item #1) */
+.inline-group .card-header {
+    background: transparent !important;
+    border-bottom: none !important;
+    padding: 10px 14px 4px 14px !important;
+}
+
+.inline-group .card-header .card-title,
+.inline-group .card-header h3 {
+    font-size: 0.875rem !important;
+    font-weight: 700 !important;
+    color: #475569 !important;
+}
+
+.inline-group .card-body {
+    padding: 8px 14px 14px 14px !important;
+    background: transparent !important;
+}
+
+
+/* ==========================================================================
+   2. DESTIQUE LIMPO E ÚNICO PARA OS CAMPOS EDITÁVEIS
+   ========================================================================== */
+
+/* CAMPO DE SELEÇÃO DO ITEM (Select2 / Autocomplete) */
+.inline-group .select2-container--bootstrap4 .select2-selection--single,
+.inline-group .select2-container--adminlite .select2-selection--single,
+.inline-group .select2-container--default .select2-selection--single,
+.inline-group .select2-container .select2-selection--single {
+    background-color: #ffffff !important;
+    border: 1px solid #cbd5e1 !important; /* Borda simples de 1px */
+    border-radius: 6px !important;
+    min-height: 40px !important;
+    box-shadow: none !important;
+}
+
+/* Destaque ao clicar no campo de seleção */
+.inline-group .select2-container--focus .select2-selection--single,
+.inline-group .select2-container--open .select2-selection--single {
+    border-color: #6366f1 !important; /* Destaque roxo discreto no foco */
+}
+
+/* CAMPO DE PREÇO ESPECÍFICO E INPUTS DE TEXTO */
+.inline-group input[type="number"],
+.inline-group input[type="text"],
+.inline-group .form-control {
+    background-color: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    padding: 6px 10px !important;
+    height: 38px !important;
+    box-shadow: none !important;
+}
+
+/* Rótulos dos campos */
+.inline-group label {
+    font-weight: 600 !important;
+    color: #334155 !important;
+    font-size: 0.85rem !important;
+    margin-bottom: 3px !important;
+}
+
+
+/* ==========================================================================
+   3. RESPONSIVIDADE MOBILE E BOTÃO DE APAGAR
+   ========================================================================== */
+
+/* Autocomplete 100% responsivo no celular */
 .select2-container {
     width: 100% !important;
-    min-width: 180px !important;
+    min-width: 100% !important;
 }
 
-.select2-container .select2-selection--single {
-    height: 38px !important;
-    display: flex !important;
-    align-items: center !important;
-}
-
-.select2-container--admin .select2-selection--single .select2-selection__rendered,
-.select2-container--adminlite .select2-selection--single .select2-selection__rendered,
-.select2-container--default .select2-selection--single .select2-selection__rendered {
+.select2-container .select2-selection--single .select2-selection__rendered {
     white-space: normal !important;
     word-break: break-word !important;
-    padding-left: 8px !important;
-    padding-right: 20px !important;
+    padding-left: 4px !important;
 }
 
 @media (max-width: 768px) {
-    .inline-group td.field-item {
-        min-width: 160px !important;
-    }
-    
     .select2-dropdown {
         width: 100% !important;
         max-width: 90vw !important;
     }
 }
 
-/* ==========================================================================
-   Estilo Limpo e Sem Excesso de Bordas
-   ========================================================================== */
-
-/* Bloco do item: Sem bordas pesadas, apenas fundo sutil para separar um item do outro */
-.inline-group .inline-related {
-    background-color: #f9fafb !important;
-    border: none !important;
-    border-radius: 8px !important;
-    padding: 14px 16px !important;
-    margin-bottom: 12px !important;
-}
-
-/* Título de cada item (ex: Item #1): Limpo e sem linhas divisórias */
-.inline-group .inline-related > h3 {
-    background: transparent !important;
-    color: #374151 !important;
-    font-size: 0.9rem !important;
-    font-weight: 600 !important;
-    border: none !important;
-    margin-bottom: 8px !important;
-    padding: 0 !important;
-}
-
-/* CAMPO DE SELEÇÃO DO ITEM: Borda simples de 1px apenas para dar a noção do clique */
-.inline-group .select2-container--adminlite .select2-selection--single,
-.inline-group .select2-container--default .select2-selection--single,
-.inline-group .select2-container .select2-selection--single {
-    background-color: #ffffff !important;
-    border: 1px solid #d1d5db !important; /* Borda leve de 1px */
-    border-radius: 6px !important;
-    min-height: 40px !important;
-    box-shadow: none !important;
-}
-
-/* Efeito sutil ao clicar no campo de seleção */
-.inline-group .select2-container--adminlite.select2-container--focus .select2-selection--single,
-.inline-group .select2-container--open .select2-selection--single {
-    border-color: #6366f1 !important;
-}
-
-/* CAMPO DE PREÇO ESPECÍFICO: Segue a mesma linha simples de 1px */
-.inline-group input[type="number"],
-.inline-group input[type="text"] {
-    background-color: #ffffff !important;
-    border: 1px solid #d1d5db !important;
-    border-radius: 6px !important;
-    padding: 8px 12px !important;
-    min-height: 38px !important;
-    width: 100% !important;
-    max-width: 300px !important;
-    box-shadow: none !important;
-}
-
-/* Rótulos (Labels): Diretos e discretos */
-.inline-group label {
-    font-weight: 600 !important;
-    color: #4b5563 !important;
-    font-size: 0.875rem !important;
-    margin-bottom: 4px !important;
-    display: block !important;
-}
-
-/* Botão de Apagar: Discreto no canto direito */
+/* Botão de Apagar sutil no canto */
+.inline-group .card-tools,
 .inline-group .delete {
     float: right !important;
-    background: transparent !important;
-    border: none !important;
-    padding: 0 !important;
 }
 
-.inline-group .delete label {
+.inline-group .delete label,
+.inline-group .custom-control-label {
     color: #ef4444 !important;
-    font-weight: 500 !important;
-    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    font-size: 0.8rem !important;
     cursor: pointer !important;
 }
