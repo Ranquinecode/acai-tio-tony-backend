@@ -8,11 +8,12 @@ pip install -r requirements.txt
 echo "🧹 Limpando arquivos estáticos antigos..."
 rm -rf staticfiles
 
-echo "📝 Garantindo migrações atualizadas para a loja..."
+echo "📝 Gerando migrações pendentes..."
 python manage.py makemigrations loja --noinput
 
 echo "🗄️ Aplicando migrações no banco Neon.tech..."
-python manage.py migrate --noinput
+# --fake-initial diz ao Django: se a tabela/coluna já existir no Postgres, não tente recriá-la, apenas marque como aplicada!
+python manage.py migrate --fake-initial --noinput
 
 echo "🎨 Coletando arquivos estáticos..."
 python manage.py collectstatic --no-input
