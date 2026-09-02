@@ -1,5 +1,13 @@
 from django.contrib import admin
-from .models import Categoria, ItemAdicional, GrupoOpcao, ItemGrupoOpcao, Produto, Pedido
+from .models import (
+    Categoria, 
+    ItemAdicional, 
+    GrupoOpcao, 
+    ItemGrupoOpcao, 
+    Produto, 
+    Pedido,
+    ItemCombo  # Import do ItemCombo adicionado
+)
 
 
 class ItemGrupoOpcaoInline(admin.StackedInline):
@@ -10,6 +18,16 @@ class ItemGrupoOpcaoInline(admin.StackedInline):
     verbose_name = "Item"
     verbose_name_plural = "Itens deste Grupo (Com subgrupos opcionais)"
     fields = ('item', 'preco_especifico', 'grupos_filhos')
+
+
+class ItemComboInline(admin.TabularInline):
+    model = ItemCombo
+    fk_name = 'combo'
+    extra = 1
+    verbose_name = "Produto do Combo"
+    verbose_name_plural = "Produtos que compõem este Combo"
+    autocomplete_fields = ['produto_conteudo']
+    fields = ('produto_conteudo', 'quantidade', 'ordem')
 
 
 @admin.register(Categoria)
@@ -79,6 +97,7 @@ class ProdutoAdmin(admin.ModelAdmin):
     list_editable = ('preco_base', 'preco_camada_extra', 'eh_customizavel', 'eh_combo', 'ativo')
     search_fields = ('nome', 'descricao')
     filter_horizontal = ('grupos_opcoes',)
+    inlines = [ItemComboInline]
 
 
 @admin.register(Pedido)
