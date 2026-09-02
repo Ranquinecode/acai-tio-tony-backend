@@ -18,7 +18,8 @@ class ItemAdicional(models.Model):
     nome = models.CharField(max_length=100)
     imagem_url = models.URLField(
         blank=True, 
-        help_text="URL da imagem no Cloudinary (opcional). Ex: https://res.cloudinary.com/..."
+        help_text="URL da imagem no Cloudinary (opcional). Recomendado: foto quadrada (1:1)."
+    )
 
     class Meta:
         verbose_name = 'Item Adicional'
@@ -55,6 +56,7 @@ class GrupoOpcao(models.Model):
     def __str__(self):
         return self.nome
 
+
 class ItemGrupoOpcao(models.Model):
     grupo = models.ForeignKey(GrupoOpcao, on_delete=models.CASCADE, related_name='itens_relacionados')
     item = models.ForeignKey(ItemAdicional, on_delete=models.CASCADE)
@@ -86,7 +88,7 @@ class Produto(models.Model):
     )
     eh_combo = models.BooleanField(default=False, help_text="Marque se for um combo promocional")
     grupos_opcoes = models.ManyToManyField(GrupoOpcao, blank=True)
-    imagem_url = models.URLField(blank=True)
+    imagem_url = models.URLField(blank=True, help_text="URL da foto principal do produto no Cloudinary")
     ativo = models.BooleanField(default=True)
 
     class Meta:
