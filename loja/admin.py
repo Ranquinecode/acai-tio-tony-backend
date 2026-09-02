@@ -16,7 +16,7 @@ class ItemGrupoOpcaoInline(admin.StackedInline):
     autocomplete_fields = ['item']
     filter_horizontal = ('grupos_filhos',)
     verbose_name = "Item do Grupo"
-    verbose_name_plural = "Itens deste Grupo (com subgrupos opcionais encadeados)"
+    verbose_name_plural = "Itens e Subgrupos Vinculados a este Grupo"
     fields = ('item', 'preco_especifico', 'grupos_filhos')
 
 
@@ -24,8 +24,8 @@ class ItemComboInline(admin.TabularInline):
     model = ItemCombo
     fk_name = 'combo'
     extra = 1
-    verbose_name = "Produto do Combo"
-    verbose_name_plural = "Produtos que compõem este Combo"
+    verbose_name = "Item do Combo"
+    verbose_name_plural = "Produtos que compõem este Combo (Caso este produto seja um combo)"
     autocomplete_fields = ['produto_conteudo']
     fields = ('produto_conteudo', 'quantidade', 'ordem')
 
@@ -35,12 +35,14 @@ class CategoriaAdmin(admin.ModelAdmin):
     list_display = ('nome', 'ordem', 'ativo')
     list_editable = ('ordem', 'ativo')
     search_fields = ('nome',)
+    ordering = ('ordem', 'nome')
 
 
 @admin.register(ItemAdicional)
 class ItemAdicionalAdmin(admin.ModelAdmin):
-    list_display = ('nome',)
+    list_display = ('nome', 'imagem_url')
     search_fields = ('nome',)
+    ordering = ('nome',)
 
 
 @admin.register(GrupoOpcao)
@@ -66,13 +68,13 @@ class GrupoOpcaoAdmin(admin.ModelAdmin):
     inlines = [ItemGrupoOpcaoInline]
 
     fieldsets = (
-        ('Informações Básicas', {
+        ('1. Nome do Grupo', {
             'fields': ('nome',)
         }),
-        ('Regras de Escolha e Obrigatoriedade', {
+        ('2. Regras de Escolha e Obrigatoriedade', {
             'fields': ('qtd_minima', 'qtd_maxima', 'permitir_repeticao')
         }),
-        ('Regras para Itens Excedentes (Extras Cobrados)', {
+        ('3. Regras para Itens Excedentes (Cobrança Extra)', {
             'fields': ('permitir_exceder', 'preco_item_excedente', 'limite_excedente')
         }),
     )
@@ -101,10 +103,36 @@ class ProdutoAdmin(admin.ModelAdmin):
     filter_horizontal = ('grupos_opcoes',)
     inlines = [ItemComboInline]
 
+    fieldsets = (
+        ('Informações Principais', {
+            'fields': ('nome', 'categoria', 'descricao', 'imagem', 'ativo')
+        }),
+        ('Preços e Configurações', {
+            'fields': ('preco_base', 'preco_camada_extra', 'eh_customizavel', 'eh_combo')
+        }),
+        ('Grupos de Opções (Adicionais, Caldas, etc.)', {
+            'fields': ('grupos_opcoes',),
+            'description': 'Selecione os grupos de complementos que aparecerão quando o cliente escolher este produto.'
+        }),
+    )
+
 
 @admin.register(Pedido)
 class PedidoAdmin(admin.ModelAdmin):
     list_display = ('id', 'nome_cliente', 'telefone_cliente', 'valor_total', 'status', 'criado_em')
     list_filter = ('status', 'criado_em')
     search_fields = ('nome_cliente', 'telefone_cliente', 'id')
-    readonly_fields = ('criado_em',)
+    readonly_fields = ('criado_em', 'nome_cliente', 'telefone_cliente', 'endereco_completo', 'payload_itens', 'valor_produtos', 'taxa_entrega', 'valor_total', 'mercado_pago_id')
+    
+    # Organiza a visualização do pedido individual para ser direta e limpa
+    fieldsets = (
+        ('Status do Pedido', {
+            'fields': ('status', 'criado_em')
+        }),
+        ('Informações do Cliente', {
+            'fields': ('nome_cliente', 'telefone_cliente', 'endereco_completo')
+        }),
+        ('Detalhes do Consumo e Pagamento', {
+            'fields': ('payload_itens', 'valor_produtos', 'taxa_entrega', 'valor_total', 'mercado_pago_id')
+        }),
+    )
