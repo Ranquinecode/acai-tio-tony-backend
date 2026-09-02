@@ -6,78 +6,132 @@
 .inline-group .card,
 .inline-group .card-secondary,
 .inline-group .card-outline {
-    border: none !important;
-    box-shadow: none !important;
-    background-color: #f8fafc !important; /* Fundo cinza bem suave para agrupar */
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+    background-color: #f8fafc !important; /* Fundo cinza suave para agrupamento */
     margin-bottom: 12px !important;
     border-radius: 8px !important;
 }
 
 /* Remove as linhas e bordas pesadas dos cabeçalhos do Jazzmin (ex: Item #1) */
 .inline-group .card-header {
-    background: transparent !important;
-    border-bottom: none !important;
-    padding: 10px 14px 4px 14px !important;
+    background: #f1f5f9 !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    padding: 8px 14px !important;
+    border-top-left-radius: 8px !important;
+    border-top-right-radius: 8px !important;
 }
 
 .inline-group .card-header .card-title,
 .inline-group .card-header h3 {
     font-size: 0.875rem !important;
     font-weight: 700 !important;
-    color: #475569 !important;
+    color: #334155 !important;
+    margin: 0 !important;
 }
 
 .inline-group .card-body {
-    padding: 8px 14px 14px 14px !important;
-    background: transparent !important;
+    padding: 12px 14px !important;
+    background: #ffffff !important;
+    border-bottom-left-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
 }
 
 
 /* ==========================================================================
-   2. DESTIQUE LIMPO E ÚNICO PARA OS CAMPOS EDITÁVEIS
+   2. DESTAQUE LIMPO E ÚNICO PARA OS CAMPOS EDITÁVEIS
    ========================================================================== */
 
 /* CAMPO DE SELEÇÃO DO ITEM (Select2 / Autocomplete) */
 .inline-group .select2-container--bootstrap4 .select2-selection--single,
 .inline-group .select2-container--adminlite .select2-selection--single,
 .inline-group .select2-container--default .select2-selection--single,
-.inline-group .select2-container .select2-selection--single {
+.inline-group .select2-container .select2-selection--single,
+.select2-container--default .select2-selection--single {
     background-color: #ffffff !important;
     border: 1px solid #cbd5e1 !important; /* Borda simples de 1px */
     border-radius: 6px !important;
-    min-height: 40px !important;
+    min-height: 38px !important;
+    height: 38px !important;
     box-shadow: none !important;
+}
+
+/* Alinhamento do texto interno do Select2 */
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 36px !important;
+    color: #1e293b !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px !important;
 }
 
 /* Destaque ao clicar no campo de seleção */
 .inline-group .select2-container--focus .select2-selection--single,
-.inline-group .select2-container--open .select2-selection--single {
-    border-color: #6366f1 !important; /* Destaque roxo discreto no foco */
+.inline-group .select2-container--open .select2-selection--single,
+.select2-container--open .select2-selection--single {
+    border-color: #6366f1 !important; /* Destaque roxo/índigo discreto */
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
 }
 
-/* CAMPO DE PREÇO ESPECÍFICO E INPUTS DE TEXTO */
+/* CAMPOS DE NÚMERO, TEXTO E SELECTS PADRÃO */
 .inline-group input[type="number"],
 .inline-group input[type="text"],
-.inline-group .form-control {
+.inline-group select,
+.inline-group .form-control,
+#result_list input[type="number"] {
     background-color: #ffffff !important;
     border: 1px solid #cbd5e1 !important;
     border-radius: 6px !important;
     padding: 6px 10px !important;
     height: 38px !important;
     box-shadow: none !important;
+    color: #0f172a !important;
+}
+
+/* Foco em inputs */
+.inline-group input[type="number"]:focus,
+.inline-group input[type="text"]:focus,
+.inline-group select:focus {
+    border-color: #6366f1 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
 }
 
 /* Rótulos dos campos */
 .inline-group label {
     font-weight: 600 !important;
-    color: #334155 !important;
+    color: #475569 !important;
     font-size: 0.85rem !important;
-    margin-bottom: 3px !important;
+    margin-bottom: 4px !important;
 }
 
 
 /* ==========================================================================
-   3. RESPONSIVIDADE MOBILE E BOTÃO DE APAGAR
+   3. ESTILIZAÇÃO DA TABELA DE PRODUTOS / ATALHOS RAPIDOS (list_editable)
+   ========================================================================== */
+
+/* Campo de ordem menor e centralizado na listagem */
+#result_list .field-ordem input[type="number"] {
+    width: 70px !important;
+    text-align: center;
+    font-weight: 600;
+}
+
+#result_list th {
+    background-color: #f8fafc !important;
+    color: #475569 !important;
+    font-weight: 700 !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+}
+
+#result_list tr:hover {
+    background-color: #f1f5f9 !important;
+}
+
+
+/* ==========================================================================
+   4. RESPONSIVIDADE MOBILE E BOTÃO DE APAGAR
    ========================================================================== */
 
 /* Autocomplete 100% responsivo no celular */
@@ -89,17 +143,27 @@
 .select2-container .select2-selection--single .select2-selection__rendered {
     white-space: normal !important;
     word-break: break-word !important;
-    padding-left: 4px !important;
+    padding-left: 6px !important;
 }
 
 @media (max-width: 768px) {
     .select2-dropdown {
         width: 100% !important;
-        max-width: 90vw !important;
+        max-width: 92vw !important;
+    }
+    
+    .inline-group .card-body {
+        padding: 10px !important;
+    }
+    
+    /* Rolagem suave na tabela do Admin em telas pequenas */
+    .results {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
     }
 }
 
-/* Botão de Apagar sutil no canto */
+/* Botão de Apagar sutil e estilizado */
 .inline-group .card-tools,
 .inline-group .delete {
     float: right !important;
@@ -111,4 +175,9 @@
     font-weight: 600 !important;
     font-size: 0.8rem !important;
     cursor: pointer !important;
+}
+
+.inline-group .delete input[type="checkbox"] {
+    accent-color: #ef4444;
+    margin-right: 4px;
 }
