@@ -8,11 +8,10 @@ pip install -r requirements.txt
 echo "🧹 Limpando arquivos estáticos antigos..."
 rm -rf staticfiles
 
-echo "🗄️ Aplicando migrações (com tratamento de estado)..."
-# Marca a migração problemática como aplicada (falsamente) caso ela já exista no banco
-python manage.py migrate loja --fake 0004_grupoopcao_permitir_repeticao_and_more || true
+echo "📝 Garantindo migrações atualizadas para a loja..."
+python manage.py makemigrations loja --noinput
 
-# Roda o restante das migrações normalmente
+echo "🗄️ Aplicando migrações no banco Neon.tech..."
 python manage.py migrate --noinput
 
 echo "🎨 Coletando arquivos estáticos..."
