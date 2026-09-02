@@ -2,13 +2,15 @@ from django.contrib import admin
 from .models import Categoria, ItemAdicional, GrupoOpcao, ItemGrupoOpcao, Produto, Pedido
 
 
-class ItemGrupoOpcaoInline(admin.StackedInline):
+# Alterado de StackedInline para TabularInline (formato de tabela compacta)
+class ItemGrupoOpcaoInline(admin.TabularInline):
     model = ItemGrupoOpcao
     extra = 1
     autocomplete_fields = ['item']
-    # Define um nome amigável e claro para cada vinculo adicionado
-    verbose_name = "Opção / Item"
-    verbose_name_plural = "Itens Selecionados para este Grupo"
+    verbose_name = "Item"
+    verbose_name_plural = "Itens do Grupo"
+    # Define as colunas exatas da tabela
+    fields = ('item', 'preco_especifico')
 
 
 @admin.register(Categoria)
@@ -54,7 +56,6 @@ class GrupoOpcaoAdmin(admin.ModelAdmin):
     )
 
     class Media:
-        # Usando os estáticos sob o namespace correto 'loja/'
         js = ('loja/js/toggle_excedentes.js',)
         css = {
             'all': ('loja/css/custom_admin.css',)
