@@ -4,6 +4,9 @@ set -o errexit
 
 pip install -r requirements.txt
 
+# Remove o cache de arquivos estáticos de builds anteriores para evitar conflitos
+rm -rf staticfiles
+
 # Gera o arquivo de migração se houver alterações no models.py
 python manage.py makemigrations
 
