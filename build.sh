@@ -8,7 +8,7 @@ pip install -r requirements.txt
 echo "🧹 Limpando arquivos estáticos antigos..."
 rm -rf staticfiles
 
-echo "🔧 Sincronizando colunas no PostgreSQL (Neon.tech)..."
+echo "🔧 Sincronizando colunas e tabelas no PostgreSQL (Neon.tech)..."
 python -c "
 import os, django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
@@ -20,7 +20,10 @@ queries = [
     'ALTER TABLE loja_itemadicional ADD COLUMN IF NOT EXISTS disponibilidade VARCHAR(20) DEFAULT \'disponivel\';',
     'ALTER TABLE loja_produto ADD COLUMN IF NOT EXISTS preco_camada_extra NUMERIC(6, 2) DEFAULT 2.00;',
     'ALTER TABLE loja_produto ADD COLUMN IF NOT EXISTS eh_customizavel BOOLEAN DEFAULT TRUE;',
-    'ALTER TABLE loja_produto ADD COLUMN IF NOT EXISTS eh_combo BOOLEAN DEFAULT FALSE;'
+    'ALTER TABLE loja_produto ADD COLUMN IF NOT EXISTS eh_combo BOOLEAN DEFAULT FALSE;',
+    'ALTER TABLE loja_itemgrupoopcao ADD COLUMN IF NOT EXISTS ordem INTEGER DEFAULT 1;',
+    'CREATE TABLE IF NOT EXISTS loja_categoriaitemadicional (id SERIAL PRIMARY KEY, nome VARCHAR(100) NOT NULL, ordem INTEGER NOT NULL DEFAULT 0);',
+    'ALTER TABLE loja_itemadicional ADD COLUMN IF NOT EXISTS categoria_item_id INTEGER REFERENCES loja_categoriaitemadicional(id) ON DELETE SET NULL;'
 ]
 
 with connection.cursor() as cursor:
