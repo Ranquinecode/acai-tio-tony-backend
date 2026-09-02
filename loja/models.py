@@ -106,7 +106,9 @@ class ItemGrupoOpcao(models.Model):
         unique_together = ('grupo', 'item')
 
     def __str__(self):
-        return f"{self.item.nome} no {self.grupo.nome} - R$ {self.preco_especifico}"
+        nome_item = self.item.nome if hasattr(self, 'item') and self.item else "Item desvinculado"
+        nome_grupo = self.grupo.nome if hasattr(self, 'grupo') and self.grupo else "Grupo desvinculado"
+        return f"{nome_item} no {nome_grupo} - R$ {self.preco_especifico}"
 
 
 class Produto(models.Model):
@@ -147,37 +149,15 @@ class Produto(models.Model):
         return f"{self.nome} - R$ {self.preco_base}"
 
 
-class Pedido(models.Model):
-    nome_cliente = models.CharField(max_length=100)
-    telefone_cliente = models.CharField(max_length=20)
-    endereco_completo = models.JSONField()
-    payload_itens = models.JSONField()
-    valor_produtos = models.DecimalField(max_digits=6, decimal_places=2)
-    taxa_entrega = models.DecimalField(max_digits=6, decimal_places=2)
-    valor_total = models.DecimalField(max_digits=6, decimal_places=2)
-    status = models.CharField(max_length=20, default='pendente')
-    mercado_pago_id = models.CharField(max_length=100, blank=True)
-    criado_em = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ['-criado_em']
-        verbose_name = 'Pedido'
-        verbose_name_plural = 'Pedidos'
-
-    def __str__(self):
-        return f"Pedido #{self.id} - {self.nome_cliente} ({self.status})"
-
-# Adicione este novo modelo ao seu loja/models.py
-
 class ItemCombo(models.Model):
     combo = models.ForeignKey(
-        'Produto', 
+        Produto, 
         on_delete=models.CASCADE, 
         related_name='itens_combo',
         help_text="O produto principal marcado como eh_combo=True"
     )
     produto_conteudo = models.ForeignKey(
-        'Produto', 
+        Produto, 
         on_delete=models.CASCADE, 
         related_name='presente_em_combos',
         verbose_name="Produto Incluído",
@@ -198,4 +178,27 @@ class ItemCombo(models.Model):
         ordering = ['ordem']
 
     def __str__(self):
-        return f"{self.quantidade}x {self.produto_conteudo.nome} no combo {self.combo.nome}"
+        nome_conteudo = self.produto_conteudo.nome if hasattr(self, 'produto_conteudo') and self.produto_conteudo else "Produto desvinculado"
+        nome_combo = self.combo.nome if hasattr(self, 'combo') and self.combo else "Combo desvinculado"
+        return f"{self.quantidade}x {nome_conteudo} no combo {nome_combo}"
+
+
+class Pedido(models.Model):
+    nome_cliente = models.CharField(max_length=100)
+    telefone_cliente = models.CharField(max_length=20)
+    endereco_completo = models.JSONField()
+    payload_itens = models.JSONField()
+    valor_produtos = models.DecimalField(max_digits=6, decimal_places=2)
+    taxa_entrega = models.DecimalField(max_digits=6, decimal_places=2)
+    valor_total = models.DecimalField(max_digits=6, decimal_places=2)
+    status = models.CharField(max_length=20, default='pendente')
+    mercado_pago_id = models.CharField(max_length=100, blank=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-criado_em']
+        verbose_name = 'Pedido'
+        verbose_name_plural = 'Pedidos'
+
+    def __str__(self):
+        return f"Pedido #{self.id} - {self.nome_cliente} ({self.status})"
