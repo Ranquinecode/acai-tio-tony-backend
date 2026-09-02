@@ -81,7 +81,6 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# CORRIGIDO: Colchete fechado corretamente
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'loja', 'static'),
 ]
@@ -102,8 +101,8 @@ CLOUDINARY_STORAGE = {
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-# Configuração do WhiteNoise para produção
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+# Configuração Recomendada do WhiteNoise para Produção com Manifest Hashing
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Personalização Visual do Jazzmin (Admin Açaí do Tio Tony)
 JAZZMIN_SETTINGS = {
@@ -119,31 +118,32 @@ JAZZMIN_SETTINGS = {
     "show_sidebar": True,
     "navigation_expanded": True,
     "icons": {
-        "auth": "fas fontawesome-user",
-        "auth.user": "fas fontawesome-user",
-        "loja.categoria": "fas fontawesome-list",
-        "loja.produto": "fas fontawesome-wine-glass-alt",
-        "loja.grupoopcao": "fas fontawesome-plus-circle",
-        "loja.itemadicional": "fas fontawesome-cookie-bite",
-        "loja.pedido": "fas fontawesome-shopping-cart",
+        "auth": "fas fa-users",
+        "auth.user": "fas fa-user",
+        "loja.categoria": "fas fa-list",
+        "loja.produto": "fas fa-wine-glass-alt",
+        "loja.grupoopcao": "fas fa-plus-circle",
+        "loja.itemadicional": "fas fa-cookie-bite",
+        "loja.pedido": "fas fa-shopping-cart",
     },
-    "default_icon_parents": "fas fontawesome-folder",
-    "default_icon_children": "fas fontawesome-circle",
-    "custom_css": "admin/css/responsive_admin.css",
-    "custom_js": "admin/js/toggle_excedentes.js",
+    "default_icon_parents": "fas fa-folder",
+    "default_icon_children": "fas fa-circle",
+    # Mapeamento com o namespace 'loja' para evitar colisão com o pacote Jazzmin
+    "custom_css": "loja/css/custom_admin.css",
+    "custom_js": "loja/js/custom_admin.js",
 }
 
 JAZZMIN_UI_TWEAKS = {
-    "theme": "pulse",                  # Tema base suave em tons de lilás/roxo claro
+    "theme": "pulse",
     "dark_mode_theme": None,
-    "navbar": "navbar-dark bg-indigo",  # Barra superior em roxo açaí
+    "navbar": "navbar-dark bg-indigo",
     "navbar_small_text": False,
-    "sidebar": "sidebar-light-indigo", # Menu lateral em fundo claro com destaques roxos
+    "sidebar": "sidebar-light-indigo",
     "sidebar_nav_small_text": False,
     "sidebar_disable_expand": False,
     "sidebar_nav_child_indent": True,
     "sidebar_nav_compact_style": False,
-    "accent": "accent-warning",        # Detalhes em tom Dourado/Âmbar
+    "accent": "accent-warning",
     "button_classes": {
         "primary": "btn-outline-primary",
         "secondary": "btn-outline-secondary",
