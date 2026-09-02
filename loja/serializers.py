@@ -11,11 +11,12 @@ class ItemAdicionalSerializer(serializers.ModelSerializer):
 class ItemGrupoOpcaoSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField(source='item.id')
     nome = serializers.ReadOnlyField(source='item.nome')
+    imagem_url = serializers.ReadOnlyField(source='item.imagem_url')
     preco = serializers.DecimalField(source='preco_especifico', max_digits=6, decimal_places=2)
 
     class Meta:
         model = ItemGrupoOpcao
-        fields = ['id', 'nome', 'preco']
+        fields = ['id', 'nome', 'imagem_url', 'preco']
 
 
 class GrupoOpcaoSerializer(serializers.ModelSerializer):
@@ -33,6 +34,7 @@ class GrupoOpcaoSerializer(serializers.ModelSerializer):
             'limite_excedente', 
             'itens'
         ]
+
 
 class ProdutoSerializer(serializers.ModelSerializer):
     grupos_opcoes = GrupoOpcaoSerializer(many=True, read_only=True)
