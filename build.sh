@@ -8,10 +8,7 @@ pip install -r requirements.txt
 echo "🧹 Limpando arquivos estáticos antigos..."
 rm -rf staticfiles
 
-echo "💥 Resetando esquema do banco Neon.tech..."
-python -c "import os, django; os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings'); django.setup(); from django.db import connection; cursor = connection.cursor(); cursor.execute('DROP SCHEMA public CASCADE; CREATE SCHEMA public;')"
-
-echo "🗄️ Aplicando migração 0001_initial..."
+echo "🗄️ Aplicando migrações no banco..."
 python manage.py migrate --noinput
 
 echo "👤 Criando superusuário admin (se não existir)..."
