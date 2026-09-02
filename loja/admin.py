@@ -1,15 +1,22 @@
 from django.contrib import admin
+from django.utils.html import format_html
 from .models import (
-    Categoria, 
+    Categoria,
+    CategoriaItemAdicional,
     ItemAdicional, 
     GrupoOpcao, 
     ItemGrupoOpcao, 
     Produto, 
     ProdutoGrupoOpcao,
     Pedido,
-    ItemCombo
+    ItemCombo,
+    ItemGrupoOpcaoFilho
 )
 
+
+# ==========================================
+# INLINES (Formulários em Bloco)
+# ==========================================
 
 class ItemGrupoOpcaoInline(admin.TabularInline):
     model = ItemGrupoOpcao
@@ -39,8 +46,12 @@ class ItemComboInline(admin.TabularInline):
     verbose_name_plural = "Produtos que compõem este Combo"
     autocomplete_fields = ['produto_conteudo']
     fields = ('ordem', 'produto_conteudo', 'quantidade')
-    classes = ('item-combo-inline-group',)  # Classe identificada pelo custom_admin.js
+    classes = ('item-combo-inline-group',)
 
+
+# ==========================================
+# ADMIN REGISTRATIONS
+# ==========================================
 
 @admin.register(Categoria)
 class CategoriaAdmin(admin.ModelAdmin):
@@ -50,13 +61,30 @@ class CategoriaAdmin(admin.ModelAdmin):
     ordering = ('ordem', 'nome')
 
 
+@admin.register(CategoriaItemAdicional)
+class CategoriaItemAdicionalAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'ordem')
+    list_editable = ('ordem',)
+    search_fields = ('nome',)
+    ordering = ('ordem', 'nome')
+
+
 @admin.register(ItemAdicional)
 class ItemAdicionalAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'disponibilidade', 'imagem_url')
-    list_editable = ('disponibilidade',)
-    list_filter = ('disponibilidade',)
+    list_display = ('preview_imagem', 'nome', 'categoria_item', 'disponibilidade')
+    list_editable = ('categoria_item', 'disponibilidade')
+    list_filter = ('disponibilidade', 'categoria_item')
     search_fields = ('nome',)
-    ordering = ('nome',)
+    ordering = ('categoria_item__ordem', 'nome')
+
+    @admin.display(description='Foto')
+    def preview_imagem(self, obj):
+        if obj.imagem_url:
+            return format_html(
+                '<img src="{}" style="width: 45px; height: 45px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;" />',
+                obj.imagem_url
+            )
+        return format_html('<span style="color: #999; font-size: 11px;">Sem Imagem</span>')
 
 
 @admin.register(GrupoOpcao)
@@ -105,6 +133,7 @@ class GrupoOpcaoAdmin(admin.ModelAdmin):
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
     list_display = (
+        'preview_imagem',
         'nome', 
         'categoria', 
         'preco_base', 
@@ -126,6 +155,15 @@ class ProdutoAdmin(admin.ModelAdmin):
             'fields': ('preco_base', 'preco_camada_extra', 'eh_customizavel', 'eh_combo')
         }),
     )
+
+    @admin.display(description='Foto')
+    def preview_imagem(self, obj):
+        if obj.imagem_url:
+            return format_html(
+                '<img src="{}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;" />',
+                obj.imagem_url
+            )
+        return format_html('<span style="color: #999; font-size: 11px;">Sem Imagem</span>')
 
     class Media:
         js = ('loja/js/admin_custom.js',)
