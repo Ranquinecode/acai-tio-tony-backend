@@ -81,6 +81,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# Mantido vazio para que o Django use apenas a pasta estática das aplicações e evite duplicações
 STATICFILES_DIRS = []
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -99,7 +100,7 @@ CLOUDINARY_STORAGE = {
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-# Configuração Recomendada do WhiteNoise para Produção com Manifest Hashing
+# Configuração do WhiteNoise sem travamento por arquivos .map ausentes do AdminLTE
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # Personalização Visual do Jazzmin (Admin Açaí do Tio Tony)
