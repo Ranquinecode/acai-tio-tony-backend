@@ -6,7 +6,7 @@ from .models import (
     ItemGrupoOpcao, 
     Produto, 
     Pedido,
-    ItemCombo  # Import do ItemCombo adicionado
+    ItemCombo
 )
 
 
@@ -15,8 +15,8 @@ class ItemGrupoOpcaoInline(admin.StackedInline):
     extra = 1
     autocomplete_fields = ['item']
     filter_horizontal = ('grupos_filhos',)
-    verbose_name = "Item"
-    verbose_name_plural = "Itens deste Grupo (Com subgrupos opcionais)"
+    verbose_name = "Item do Grupo"
+    verbose_name_plural = "Itens deste Grupo (com subgrupos opcionais encadeados)"
     fields = ('item', 'preco_especifico', 'grupos_filhos')
 
 
@@ -65,14 +65,16 @@ class GrupoOpcaoAdmin(admin.ModelAdmin):
     search_fields = ('nome',)
     inlines = [ItemGrupoOpcaoInline]
 
-    fields = (
-        'nome', 
-        'qtd_minima', 
-        'qtd_maxima', 
-        'permitir_repeticao',
-        'permitir_exceder', 
-        'preco_item_excedente', 
-        'limite_excedente'
+    fieldsets = (
+        ('Informações Básicas', {
+            'fields': ('nome',)
+        }),
+        ('Regras de Escolha e Obrigatoriedade', {
+            'fields': ('qtd_minima', 'qtd_maxima', 'permitir_repeticao')
+        }),
+        ('Regras para Itens Excedentes (Extras Cobrados)', {
+            'fields': ('permitir_exceder', 'preco_item_excedente', 'limite_excedente')
+        }),
     )
 
     class Media:
