@@ -41,9 +41,23 @@ class ItemAdicional(models.Model):
 
 
 class GrupoOpcao(models.Model):
-    nome = models.CharField(max_length=100, help_text="Ex: Escolha até 3 adicionais, Caldas, etc.")
-    qtd_minima = models.IntegerField(default=0, help_text="Mínimo de itens obrigatórios neste grupo")
-    qtd_maxima = models.IntegerField(default=1, help_text="Máximo de itens inclusos/permitidos no grupo")
+    nome = models.CharField(max_length=100, help_text="Ex: Escolha até 3 adicionais, Caldas, Descartáveis, etc.")
+    
+    # Regras de Escolha e Obrigatoriedade
+    qtd_minima = models.IntegerField(
+        default=0, 
+        help_text="0 = Opcional (ex: Descartáveis). 1 ou + = Obrigatório (ex: Escolha a Base)"
+    )
+    qtd_maxima = models.IntegerField(
+        default=1, 
+        help_text="Máximo de escolhas inclusas no preço ou permitidas no grupo"
+    )
+    permitir_repeticao = models.BooleanField(
+        default=True,
+        help_text="Se marcado, permite escolher 2x ou mais do MESMO item (ex: 2x Bombom). Se desmarcado, cada item só pode 1x (ex: Paçoca)."
+    )
+
+    # Regras de Excedentes
     permitir_exceder = models.BooleanField(
         default=False, 
         help_text="Se marcado, permite ao cliente selecionar mais itens que a qtd_maxima cobrando valor extra"
@@ -64,7 +78,8 @@ class GrupoOpcao(models.Model):
         verbose_name_plural = 'Grupos de Opções'
 
     def __str__(self):
-        return self.nome
+        obrigatorio = "Obrigatório" if self.qtd_minima > 0 else "Opcional"
+        return f"{self.nome} ({obrigatorio} - Mín: {self.qtd_minima} | Máx: {self.qtd_maxima})"
 
 
 class ItemGrupoOpcao(models.Model):
@@ -75,6 +90,14 @@ class ItemGrupoOpcao(models.Model):
         decimal_places=2, 
         default=0.00, 
         help_text="Preço do item para este grupo especificamente (ex: Nutella no 330ml vs 770ml)"
+    )
+    
+    # Opções Condicionais Encadeadas (Subgrupos)
+    grupos_filhos = models.ManyToManyField(
+        GrupoOpcao, 
+        blank=True, 
+        related_name='itens_pai',
+        help_text="Subgrupos de opções que ABREM AUTOMATICAMENTE quando este item é selecionado (Ex: Escolher 'Apenas Sorvete' abre o subgrupo 'Sabores de Sorvete')."
     )
 
     class Meta:
@@ -97,7 +120,11 @@ class Produto(models.Model):
         help_text="Desmarque para produtos/combos com receita fixa (não abre o modal step-by-step)"
     )
     eh_combo = models.BooleanField(default=False, help_text="Marque se for um combo promocional")
-    grupos_opcoes = models.ManyToManyField(GrupoOpcao, blank=True)
+    grupos_opcoes = models.ManyToManyField(
+        GrupoOpcao, 
+        blank=True,
+        help_text="Grupos de opções PRINCIPAIS que aparecem assim que o produto é selecionado."
+    )
     imagem = CloudinaryField(
         'imagem', 
         blank=True, 
