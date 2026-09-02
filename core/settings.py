@@ -127,6 +127,9 @@ JAZZMIN_SETTINGS = {
     },
     "default_icon_parents": "fas fontawesome-folder",
     "default_icon_children": "fas fontawesome-circle",
+
+    "custom_css": "admin/css/responsive_admin.css",
+    "custom_js": "admin/js/toggle_excedentes.js",
 }
 
 JAZZMIN_UI_TWEAKS = {
