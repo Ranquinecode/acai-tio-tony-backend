@@ -4,10 +4,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // 1. REORDENAÇÃO & LÓGICA DO COMBO (PRODUTO)
     // ==========================================
     const comboCheckbox = document.querySelector('#id_eh_combo');
-    const comboGroup = document.querySelector('.item-combo-inline-group');
+    const comboGroup = document.querySelector('.item-combo-inline-group, #itens_combo-group');
 
     if (comboCheckbox && comboGroup) {
-        // Localiza a seção 'Preços e Tipo de Produto' (fieldset ou div de formulário)
+        // Localiza a seção 'Preços e Tipo de Produto'
         const fieldsets = document.querySelectorAll('fieldset, .form-group');
         let precosSection = null;
 
@@ -17,12 +17,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Se encontrar a seção de preços, move a tabela de combos para ficar LOGO ABAIXO dela
         if (precosSection) {
             precosSection.parentNode.insertBefore(comboGroup, precosSection.nextSibling);
         }
 
-        // Função para mostrar/ocultar a tabela de itens do combo
         function toggleComboFields() {
             if (comboCheckbox.checked) {
                 comboGroup.style.display = '';
@@ -31,15 +29,34 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        // Aplica no carregamento inicial da página
         toggleComboFields();
-
-        // Escuta mudanças na caixinha "É combo"
         comboCheckbox.addEventListener('change', toggleComboFields);
     }
 
     // ==========================================
-    // 2. LÓGICA DE GRUPO DE OPÇÃO (EXCEDENTES)
+    // 2. EXIBIÇÃO CONDICIONAL DE PREÇO CAMADA EXTRA (PRODUTO)
+    // ==========================================
+    const fieldPrecoCamadaExtra = document.querySelector('.field-preco_camada_extra');
+    if (fieldPrecoCamadaExtra) {
+        // Verifica se há alguma indicação visual de cobrança de camada extra
+        const checkCamadaExtra = () => {
+            const ehCustomizavel = document.querySelector('#id_eh_customizavel');
+            if (ehCustomizavel && !ehCustomizavel.checked) {
+                fieldPrecoCamadaExtra.style.display = 'none';
+            } else {
+                fieldPrecoCamadaExtra.style.display = '';
+            }
+        };
+
+        const ehCustomizavelCheck = document.querySelector('#id_eh_customizavel');
+        if (ehCustomizavelCheck) {
+            checkCamadaExtra();
+            ehCustomizavelCheck.addEventListener('change', checkCamadaExtra);
+        }
+    }
+
+    // ==========================================
+    // 3. LÓGICA DE GRUPO DE OPÇÃO (EXCEDENTES)
     // ==========================================
 
     // Formulário de Edição (Tela individual de GrupoOpcao)
@@ -60,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Tabela de Listagem do Admin (Desktop e Mobile com list_editable)
-    const rows = document.querySelectorAll('#result_list tbody tr');
+    const rows = document.querySelectorAll('#result_list tbody tr, table tbody tr');
     rows.forEach(row => {
         const checkbox = row.querySelector('.field-permitir_exceder input[type="checkbox"]');
         const cellPreco = row.querySelector('.field-preco_item_excedente');
