@@ -15,10 +15,9 @@ class ItemGrupoOpcaoInline(admin.TabularInline):
     model = ItemGrupoOpcao
     extra = 1
     autocomplete_fields = ['item']
-    filter_horizontal = ('grupos_filhos',)
     verbose_name = "Item deste Grupo"
     verbose_name_plural = "Itens e Ordem de Exibição neste Grupo"
-    fields = ('ordem', 'item', 'preco_especifico', 'grupos_filhos')
+    fields = ('ordem', 'item', 'preco_especifico')
     ordering = ('ordem',)
 
 
@@ -97,9 +96,9 @@ class GrupoOpcaoAdmin(admin.ModelAdmin):
     )
 
     class Media:
-        js = ('loja/js/custom_admin.js',)
+        js = ('loja/js/admin_custom.js',)
         css = {
-            'all': ('loja/css/custom_admin.css',)
+            'all': ('loja/css/admin_custom.css',)
         }
 
 
@@ -129,9 +128,9 @@ class ProdutoAdmin(admin.ModelAdmin):
     )
 
     class Media:
-        js = ('loja/js/custom_admin.js',)
+        js = ('loja/js/admin_custom.js',)
         css = {
-            'all': ('loja/css/custom_admin.css',)
+            'all': ('loja/css/admin_custom.css',)
         }
 
 
