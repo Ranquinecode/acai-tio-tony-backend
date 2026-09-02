@@ -6,8 +6,9 @@ class ItemGrupoOpcaoInline(admin.StackedInline):
     model = ItemGrupoOpcao
     extra = 1
     autocomplete_fields = ['item']
-    verbose_name = "Item do Grupo"
-    verbose_name_plural = "Itens do Grupo"
+    # Define um nome amigável e claro para cada vinculo adicionado
+    verbose_name = "Opção / Item"
+    verbose_name_plural = "Itens Selecionados para este Grupo"
 
 
 @admin.register(Categoria)
@@ -53,9 +54,10 @@ class GrupoOpcaoAdmin(admin.ModelAdmin):
     )
 
     class Media:
-        js = ('admin/js/toggle_excedentes.js',)
+        # Usando os estáticos sob o namespace correto 'loja/'
+        js = ('loja/js/toggle_excedentes.js',)
         css = {
-            'all': ('admin/css/responsive_admin.css',)
+            'all': ('loja/css/custom_admin.css',)
         }
 
 
