@@ -157,7 +157,7 @@ JAZZMIN_SETTINGS = {
     "custom_css": "loja/css/custom_admin.css",
     "custom_js": "loja/js/custom_admin.js",
     "use_google_fonts_cdn": True,
-    "changeform_format": "horizontal_tabs", # Abas organizadas na edição para não poluir telas longas
+    "changeform_format": "single", # Carrega tudo em uma única tela contínua sem abas
 }
 
 JAZZMIN_UI_TWEAKS = {
@@ -180,7 +180,7 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_compact_style": False,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
-    "theme": "flatly", # Tema clean, moderno e ultra legível
+    "theme": "flatly",
     "dark_mode_theme": None,
     "button_classes": {
         "primary": "btn-primary",
