@@ -11,16 +11,18 @@ from .serializers import (
 )
 
 class CategoriaViewSet(viewsets.ReadOnlyModelViewSet):
-    # O prefetch_related carrega produtos e adicionais aninhados sem desacelerar a resposta da API
+    # Prefetch encadeado até os subgrupos (grupos_filhos) para evitar N+1 queries
     queryset = Categoria.objects.filter(ativo=True).prefetch_related(
-        'produtos__grupos_opcoes__itens_relacionados__item'
+        'produtos__grupos_opcoes__itens_relacionados__item',
+        'produtos__grupos_opcoes__itens_relacionados__grupos_filhos__itens_relacionados__item'
     ).order_by('ordem')
     serializer_class = CategoriaSerializer
 
 
 class ProdutoViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Produto.objects.filter(ativo=True).prefetch_related(
-        'grupos_opcoes__itens_relacionados__item'
+        'grupos_opcoes__itens_relacionados__item',
+        'grupos_opcoes__itens_relacionados__grupos_filhos__itens_relacionados__item'
     )
     serializer_class = ProdutoSerializer
 
