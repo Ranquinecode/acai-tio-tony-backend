@@ -1,33 +1,45 @@
 from rest_framework import serializers
-from .models import Categoria, ItemAdicional, GrupoOpcao, ItemGrupoOpcao, Produto, Pedido, ItemCombo
+from .models import (
+    Categoria, 
+    ItemAdicional, 
+    GrupoOpcao, 
+    ItemGrupoOpcao, 
+    Produto, 
+    Pedido, 
+    ItemCombo
+)
 
 
 class ItemAdicionalSerializer(serializers.ModelSerializer):
     class Meta:
         model = ItemAdicional
-        fields = ['id', 'nome', 'imagem_url']
+        fields = ['id', 'nome', 'disponibilidade', 'imagem_url']
 
 
 class ItemGrupoOpcaoSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField(source='item.id')
     nome = serializers.ReadOnlyField(source='item.nome')
+    disponibilidade = serializers.ReadOnlyField(source='item.disponibilidade')
     imagem_url = serializers.ReadOnlyField(source='item.imagem_url')
     preco = serializers.DecimalField(source='preco_especifico', max_digits=6, decimal_places=2)
-    # Recursão via SerializerMethodField para expor os grupos filhos (condicionais) que abrem ao selecionar este item
     grupos_filhos = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = ItemGrupoOpcao
-        fields = ['id', 'nome', 'imagem_url', 'preco', 'grupos_filhos']
+        fields = ['id', 'nome', 'disponibilidade', 'imagem_url', 'preco', 'ordem', 'grupos_filhos']
 
     def get_grupos_filhos(self, obj):
-        # Evita importação circular e renderiza os subgrupos filhos de forma limpa
-        serializer = GrupoOpcaoSerializer(obj.grupos_filhos.all(), many=True, context=self.context)
+        # Evita importação circular e renderiza os subgrupos filhos ordenados
+        serializer = GrupoOpcaoSerializer(
+            obj.grupos_filhos.all().order_by('nome'), 
+            many=True, 
+            context=self.context
+        )
         return serializer.data
 
 
 class GrupoOpcaoSerializer(serializers.ModelSerializer):
-    itens = ItemGrupoOpcaoSerializer(source='itens_relacionados', many=True, read_only=True)
+    itens = serializers.SerializerMethodField()
 
     class Meta:
         model = GrupoOpcao
@@ -37,19 +49,20 @@ class GrupoOpcaoSerializer(serializers.ModelSerializer):
             'qtd_minima', 
             'qtd_maxima', 
             'permitir_repeticao',
+            'cobrar_camada_extra',
             'permitir_exceder', 
             'preco_item_excedente', 
             'limite_excedente', 
             'itens'
         ]
 
+    def get_itens(self, obj):
+        # Filtra itens ocultos no estoque e aplica a ordenação cadastrada
+        queryset = obj.itens_relacionados.exclude(item__disponibilidade='oculto').order_by('ordem')
+        return ItemGrupoOpcaoSerializer(queryset, many=True, context=self.context).data
+
 
 class ItemComboSerializer(serializers.ModelSerializer):
-    """
-    Serializa os produtos contidos dentro de um combo.
-    Serializa o 'produto_conteudo' usando o ProdutoSerializer para que o frontend 
-    tenha acesso a todas as opções e regras de personalização de cada item do combo.
-    """
     produto_conteudo = serializers.SerializerMethodField()
 
     class Meta:
@@ -58,14 +71,13 @@ class ItemComboSerializer(serializers.ModelSerializer):
 
     def get_produto_conteudo(self, obj):
         if obj.produto_conteudo:
-            # Retorna a estrutura completa do produto sem cair em loop infinito de combo
             return ProdutoSerializer(obj.produto_conteudo, context=self.context).data
         return None
 
 
 class ProdutoSerializer(serializers.ModelSerializer):
-    grupos_opcoes = GrupoOpcaoSerializer(many=True, read_only=True)
-    itens_combo = ItemComboSerializer(many=True, read_only=True)
+    grupos_opcoes = serializers.SerializerMethodField()
+    itens_combo = serializers.SerializerMethodField()
 
     class Meta:
         model = Produto
@@ -84,13 +96,28 @@ class ProdutoSerializer(serializers.ModelSerializer):
             'ativo'
         ]
 
+    def get_grupos_opcoes(self, obj):
+        # Garante a ordenação dos grupos atribuída especificamente para este produto via ProdutoGrupoOpcao
+        relacoes = obj.produto_grupos.select_related('grupo_opcao').order_by('ordem')
+        grupos = [rel.grupo_opcao for rel in relacoes]
+        return GrupoOpcaoSerializer(grupos, many=True, context=self.context).data
+
+    def get_itens_combo(self, obj):
+        queryset = obj.itens_combo.order_by('ordem')
+        return ItemComboSerializer(queryset, many=True, context=self.context).data
+
 
 class CategoriaSerializer(serializers.ModelSerializer):
-    produtos = ProdutoSerializer(many=True, read_only=True)
+    produtos = serializers.SerializerMethodField()
 
     class Meta:
         model = Categoria
         fields = ['id', 'nome', 'ordem', 'ativo', 'produtos']
+
+    def get_produtos(self, obj):
+        # Retorna apenas os produtos ativos da categoria
+        queryset = obj.produtos.filter(ativo=True)
+        return ProdutoSerializer(queryset, many=True, context=self.context).data
 
 
 class PedidoSerializer(serializers.ModelSerializer):
