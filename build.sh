@@ -8,6 +8,9 @@ pip install -r requirements.txt
 echo "🧹 Limpando arquivos estáticos antigos..."
 rm -rf staticfiles
 
+echo "📝 Gerando arquivos de migração pendentes..."
+python manage.py makemigrations --noinput
+
 echo "🗄️ Aplicando migrações no banco..."
 python manage.py migrate --noinput
 
