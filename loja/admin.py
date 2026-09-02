@@ -5,19 +5,31 @@ from .models import (
     GrupoOpcao, 
     ItemGrupoOpcao, 
     Produto, 
+    ProdutoGrupoOpcao,
     Pedido,
     ItemCombo
 )
 
 
-class ItemGrupoOpcaoInline(admin.StackedInline):
+class ItemGrupoOpcaoInline(admin.TabularInline):
     model = ItemGrupoOpcao
     extra = 1
     autocomplete_fields = ['item']
     filter_horizontal = ('grupos_filhos',)
-    verbose_name = "Item do Grupo"
-    verbose_name_plural = "Itens e Subgrupos Vinculados a este Grupo"
-    fields = ('item', 'preco_especifico', 'grupos_filhos')
+    verbose_name = "Item deste Grupo"
+    verbose_name_plural = "Itens e Ordem de Exibição neste Grupo"
+    fields = ('ordem', 'item', 'preco_especifico', 'grupos_filhos')
+    ordering = ('ordem',)
+
+
+class ProdutoGrupoOpcaoInline(admin.TabularInline):
+    model = ProdutoGrupoOpcao
+    extra = 1
+    autocomplete_fields = ['grupo_opcao']
+    verbose_name = "Grupo de Opções do Produto"
+    verbose_name_plural = "Grupos de Opções (Com Ordem de Exibição)"
+    fields = ('ordem', 'grupo_opcao')
+    ordering = ('ordem',)
 
 
 class ItemComboInline(admin.TabularInline):
@@ -27,7 +39,7 @@ class ItemComboInline(admin.TabularInline):
     verbose_name = "Produto do Combo"
     verbose_name_plural = "Produtos que compõem este Combo"
     autocomplete_fields = ['produto_conteudo']
-    fields = ('produto_conteudo', 'quantidade', 'ordem')
+    fields = ('ordem', 'produto_conteudo', 'quantidade')
     classes = ('item-combo-inline-group',)  # Classe identificada pelo custom_admin.js
 
 
@@ -41,7 +53,9 @@ class CategoriaAdmin(admin.ModelAdmin):
 
 @admin.register(ItemAdicional)
 class ItemAdicionalAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'imagem_url')
+    list_display = ('nome', 'disponibilidade', 'imagem_url')
+    list_editable = ('disponibilidade',)
+    list_filter = ('disponibilidade',)
     search_fields = ('nome',)
     ordering = ('nome',)
 
@@ -53,6 +67,7 @@ class GrupoOpcaoAdmin(admin.ModelAdmin):
         'qtd_minima', 
         'qtd_maxima', 
         'permitir_repeticao',
+        'cobrar_camada_extra',
         'permitir_exceder', 
         'preco_item_excedente',
         'limite_excedente'
@@ -61,6 +76,7 @@ class GrupoOpcaoAdmin(admin.ModelAdmin):
         'qtd_minima', 
         'qtd_maxima', 
         'permitir_repeticao',
+        'cobrar_camada_extra',
         'permitir_exceder', 
         'preco_item_excedente',
         'limite_excedente'
@@ -73,7 +89,7 @@ class GrupoOpcaoAdmin(admin.ModelAdmin):
             'fields': ('nome',)
         }),
         ('Regras de Escolha e Obrigatoriedade', {
-            'fields': ('qtd_minima', 'qtd_maxima', 'permitir_repeticao')
+            'fields': ('qtd_minima', 'qtd_maxima', 'permitir_repeticao', 'cobrar_camada_extra')
         }),
         ('Regras para Itens Excedentes (Extras Cobrados)', {
             'fields': ('permitir_exceder', 'preco_item_excedente', 'limite_excedente')
@@ -101,8 +117,7 @@ class ProdutoAdmin(admin.ModelAdmin):
     list_filter = ('categoria', 'eh_customizavel', 'eh_combo', 'ativo')
     list_editable = ('preco_base', 'preco_camada_extra', 'eh_customizavel', 'eh_combo', 'ativo')
     search_fields = ('nome', 'descricao')
-    filter_horizontal = ('grupos_opcoes',)
-    inlines = [ItemComboInline]
+    inlines = [ProdutoGrupoOpcaoInline, ItemComboInline]
 
     fieldsets = (
         ('Informações Principais', {
@@ -110,10 +125,6 @@ class ProdutoAdmin(admin.ModelAdmin):
         }),
         ('Preços e Tipo de Produto', {
             'fields': ('preco_base', 'preco_camada_extra', 'eh_customizavel', 'eh_combo')
-        }),
-        ('Grupos de Opções (Adicionais, Caldas, etc.)', {
-            'fields': ('grupos_opcoes',),
-            'description': 'Selecione os grupos de complementos que aparecerão no modal deste produto.'
         }),
     )
 
