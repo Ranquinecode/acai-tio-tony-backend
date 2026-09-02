@@ -2,14 +2,14 @@ from django.contrib import admin
 from .models import Categoria, ItemAdicional, GrupoOpcao, ItemGrupoOpcao, Produto, Pedido
 
 
-# StackedInline garante 100% de responsividade no celular
 class ItemGrupoOpcaoInline(admin.StackedInline):
     model = ItemGrupoOpcao
     extra = 1
     autocomplete_fields = ['item']
+    filter_horizontal = ('grupos_filhos',)
     verbose_name = "Item"
-    verbose_name_plural = "Itens deste Grupo"
-    fields = ('item', 'preco_especifico')
+    verbose_name_plural = "Itens deste Grupo (Com subgrupos opcionais)"
+    fields = ('item', 'preco_especifico', 'grupos_filhos')
 
 
 @admin.register(Categoria)
@@ -31,6 +31,7 @@ class GrupoOpcaoAdmin(admin.ModelAdmin):
         'nome', 
         'qtd_minima', 
         'qtd_maxima', 
+        'permitir_repeticao',
         'permitir_exceder', 
         'preco_item_excedente',
         'limite_excedente'
@@ -38,6 +39,7 @@ class GrupoOpcaoAdmin(admin.ModelAdmin):
     list_editable = (
         'qtd_minima', 
         'qtd_maxima', 
+        'permitir_repeticao',
         'permitir_exceder', 
         'preco_item_excedente',
         'limite_excedente'
@@ -49,6 +51,7 @@ class GrupoOpcaoAdmin(admin.ModelAdmin):
         'nome', 
         'qtd_minima', 
         'qtd_maxima', 
+        'permitir_repeticao',
         'permitir_exceder', 
         'preco_item_excedente', 
         'limite_excedente'
