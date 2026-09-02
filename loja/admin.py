@@ -6,6 +6,8 @@ class ItemGrupoOpcaoInline(admin.TabularInline):
     model = ItemGrupoOpcao
     extra = 1
     autocomplete_fields = ['item']
+    verbose_name = "Item do Grupo"
+    verbose_name_plural = "Itens do Grupo"
 
 
 @admin.register(Categoria)
@@ -41,19 +43,18 @@ class GrupoOpcaoAdmin(admin.ModelAdmin):
     search_fields = ('nome',)
     inlines = [ItemGrupoOpcaoInline]
 
-    # Agrupa e organiza os campos no formulário de edição
-    fieldsets = (
-        (None, {
-            'fields': ('nome', 'qtd_minima', 'qtd_maxima')
-        }),
-        ('Regras de Itens Excedentes', {
-            'fields': ('permitir_exceder', 'preco_item_excedente', 'limite_excedente'),
-            'description': 'Configure se o cliente pode pagar a mais para adicionar itens além do limite padrão.'
-        }),
+    fields = (
+        'nome', 
+        'qtd_minima', 
+        'qtd_maxima', 
+        'permitir_exceder', 
+        'preco_item_excedente', 
+        'limite_excedente'
     )
 
     class Media:
         js = ('admin/js/toggle_excedentes.js',)
+
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
