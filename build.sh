@@ -8,7 +8,10 @@ pip install -r requirements.txt
 echo "🧹 Limpando arquivos estáticos antigos..."
 rm -rf staticfiles
 
-echo "🗄️ Aplicando migrações no banco Neon.tech..."
+echo "💥 Resetando tabelas antigas do banco..."
+python -c "from django.db import connection; cursor = connection.cursor(); cursor.execute('DROP SCHEMA public CASCADE; CREATE SCHEMA public;')"
+
+echo "🗄️ Aplicando migração 0001_initial limpa..."
 python manage.py migrate --noinput
 
 echo "🎨 Coletando arquivos estáticos..."
