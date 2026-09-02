@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Categoria, ItemAdicional, GrupoOpcao, ItemGrupoOpcao, Produto, Pedido
 
 
-class ItemGrupoOpcaoInline(admin.TabularInline):
+class ItemGrupoOpcaoInline(admin.StackedInline):
     model = ItemGrupoOpcao
     extra = 1
     autocomplete_fields = ['item']
