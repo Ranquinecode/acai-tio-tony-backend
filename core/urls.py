@@ -1,12 +1,13 @@
-from django.contrib import admin
 from django.urls import path, include
-from django.http import JsonResponse
+from rest_framework.routers import DefaultRouter
+from .views import CategoriaViewSet, ProdutoViewSet, PedidoViewSet, healthcheck
 
-def healthcheck(request):
-    return JsonResponse({"status": "ok", "loja": "Açaí do Tio Tony"})
+router = DefaultRouter(trailing_slash=True)
+router.register(r'categorias', CategoriaViewSet, basename='categoria')
+router.register(r'produtos', ProdutoViewSet, basename='produto')
+router.register(r'pedidos', PedidoViewSet, basename='pedido')
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('healthcheck/', healthcheck),
-    path('api/', include('loja.urls')),
+    path('', include(router.urls)),
+    path('healthcheck/', healthcheck, name='healthcheck'),
 ]
