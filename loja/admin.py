@@ -54,6 +54,9 @@ class GrupoOpcaoAdmin(admin.ModelAdmin):
 
     class Media:
         js = ('admin/js/toggle_excedentes.js',)
+        css = {
+            'all': ('admin/css/responsive_admin.css',)
+        }
 
 
 @admin.register(Produto)
