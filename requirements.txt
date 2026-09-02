@@ -9,3 +9,5 @@ cloudinary>=1.36.0
 requests>=2.31.0
 django-jazzmin>=3.0.0
 whitenoise==6.6.0
+cloudinary
+django-cloudinary-storage
