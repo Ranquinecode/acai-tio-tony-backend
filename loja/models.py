@@ -16,6 +16,9 @@ class Categoria(models.Model):
 
 class ItemAdicional(models.Model):
     nome = models.CharField(max_length=100)
+    imagem_url = models.URLField(
+        blank=True, 
+        help_text="URL da imagem no Cloudinary (opcional). Ex: https://res.cloudinary.com/..."
 
     class Meta:
         verbose_name = 'Item Adicional'
