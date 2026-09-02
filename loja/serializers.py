@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import (
     Categoria, 
+    CategoriaItemAdicional,
     ItemAdicional, 
     GrupoOpcao, 
     ItemGrupoOpcao, 
@@ -10,10 +11,18 @@ from .models import (
 )
 
 
+class CategoriaItemAdicionalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CategoriaItemAdicional
+        fields = ['id', 'nome', 'ordem']
+
+
 class ItemAdicionalSerializer(serializers.ModelSerializer):
+    categoria_item = CategoriaItemAdicionalSerializer(read_only=True)
+
     class Meta:
         model = ItemAdicional
-        fields = ['id', 'nome', 'disponibilidade', 'imagem_url']
+        fields = ['id', 'nome', 'categoria_item', 'disponibilidade', 'imagem_url']
 
 
 class ItemGrupoOpcaoSerializer(serializers.ModelSerializer):
@@ -21,12 +30,13 @@ class ItemGrupoOpcaoSerializer(serializers.ModelSerializer):
     nome = serializers.ReadOnlyField(source='item.nome')
     disponibilidade = serializers.ReadOnlyField(source='item.disponibilidade')
     imagem_url = serializers.ReadOnlyField(source='item.imagem_url')
+    categoria_item = CategoriaItemAdicionalSerializer(source='item.categoria_item', read_only=True)
     preco = serializers.DecimalField(source='preco_especifico', max_digits=6, decimal_places=2)
     grupos_filhos = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = ItemGrupoOpcao
-        fields = ['id', 'nome', 'disponibilidade', 'imagem_url', 'preco', 'ordem', 'grupos_filhos']
+        fields = ['id', 'nome', 'categoria_item', 'disponibilidade', 'imagem_url', 'preco', 'ordem', 'grupos_filhos']
 
     def get_grupos_filhos(self, obj):
         # Evita importação circular e renderiza os subgrupos filhos ordenados
@@ -97,9 +107,15 @@ class ProdutoSerializer(serializers.ModelSerializer):
         ]
 
     def get_grupos_opcoes(self, obj):
-        # Garante a ordenação dos grupos atribuída especificamente para este produto via ProdutoGrupoOpcao
-        relacoes = obj.produto_grupos.select_related('grupo_opcao').order_by('ordem')
-        grupos = [rel.grupo_opcao for rel in relacoes]
+        # Busca a ordenação exata dos grupos atribuída especificamente para este produto
+        if hasattr(obj, 'produtogrupoopcao_set'):
+            relacoes = obj.produtogrupoopcao_set.select_related('grupo_opcao').order_by('ordem')
+            grupos = [rel.grupo_opcao for rel in relacoes]
+        elif hasattr(obj, 'produto_grupos'):
+            relacoes = obj.produto_grupos.select_related('grupo_opcao').order_by('ordem')
+            grupos = [rel.grupo_opcao for rel in relacoes]
+        else:
+            grupos = obj.grupos_opcoes.all()
         return GrupoOpcaoSerializer(grupos, many=True, context=self.context).data
 
     def get_itens_combo(self, obj):
