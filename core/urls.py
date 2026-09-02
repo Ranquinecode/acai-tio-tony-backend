@@ -1,13 +1,13 @@
+from django.contrib import admin
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import CategoriaViewSet, ProdutoViewSet, PedidoViewSet, healthcheck
-
-router = DefaultRouter(trailing_slash=True)
-router.register(r'categorias', CategoriaViewSet, basename='categoria')
-router.register(r'produtos', ProdutoViewSet, basename='produto')
-router.register(r'pedidos', PedidoViewSet, basename='pedido')
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('healthcheck/', healthcheck, name='healthcheck'),
+    # Painel de Administração Jazzmin
+    path('admin/', admin.site.urls),
+    
+    # Endpoints da API REST (Categorias, Produtos, Pedidos, Healthcheck)
+    path('api/', include('loja.urls')),
+    
+    # Redirecionamento amigável da raiz para os endpoints da loja (opcional, garante resposta rápida)
+    path('', include('loja.urls')),
 ]
