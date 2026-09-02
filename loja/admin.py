@@ -24,10 +24,11 @@ class ItemComboInline(admin.TabularInline):
     model = ItemCombo
     fk_name = 'combo'
     extra = 1
-    verbose_name = "Item do Combo"
-    verbose_name_plural = "Produtos que compõem este Combo (Caso este produto seja um combo)"
+    verbose_name = "Produto do Combo"
+    verbose_name_plural = "Produtos que compõem este Combo"
     autocomplete_fields = ['produto_conteudo']
     fields = ('produto_conteudo', 'quantidade', 'ordem')
+    classes = ('item-combo-inline-group',)  # Classe identificada pelo custom_admin.js
 
 
 @admin.register(Categoria)
@@ -68,19 +69,19 @@ class GrupoOpcaoAdmin(admin.ModelAdmin):
     inlines = [ItemGrupoOpcaoInline]
 
     fieldsets = (
-        ('1. Nome do Grupo', {
+        ('Informações Básicas', {
             'fields': ('nome',)
         }),
-        ('2. Regras de Escolha e Obrigatoriedade', {
+        ('Regras de Escolha e Obrigatoriedade', {
             'fields': ('qtd_minima', 'qtd_maxima', 'permitir_repeticao')
         }),
-        ('3. Regras para Itens Excedentes (Cobrança Extra)', {
+        ('Regras para Itens Excedentes (Extras Cobrados)', {
             'fields': ('permitir_exceder', 'preco_item_excedente', 'limite_excedente')
         }),
     )
 
     class Media:
-        js = ('loja/js/toggle_excedentes.js',)
+        js = ('loja/js/custom_admin.js',)
         css = {
             'all': ('loja/css/custom_admin.css',)
         }
@@ -107,14 +108,20 @@ class ProdutoAdmin(admin.ModelAdmin):
         ('Informações Principais', {
             'fields': ('nome', 'categoria', 'descricao', 'imagem', 'ativo')
         }),
-        ('Preços e Configurações', {
+        ('Preços e Tipo de Produto', {
             'fields': ('preco_base', 'preco_camada_extra', 'eh_customizavel', 'eh_combo')
         }),
         ('Grupos de Opções (Adicionais, Caldas, etc.)', {
             'fields': ('grupos_opcoes',),
-            'description': 'Selecione os grupos de complementos que aparecerão quando o cliente escolher este produto.'
+            'description': 'Selecione os grupos de complementos que aparecerão no modal deste produto.'
         }),
     )
+
+    class Media:
+        js = ('loja/js/custom_admin.js',)
+        css = {
+            'all': ('loja/css/custom_admin.css',)
+        }
 
 
 @admin.register(Pedido)
@@ -122,9 +129,18 @@ class PedidoAdmin(admin.ModelAdmin):
     list_display = ('id', 'nome_cliente', 'telefone_cliente', 'valor_total', 'status', 'criado_em')
     list_filter = ('status', 'criado_em')
     search_fields = ('nome_cliente', 'telefone_cliente', 'id')
-    readonly_fields = ('criado_em', 'nome_cliente', 'telefone_cliente', 'endereco_completo', 'payload_itens', 'valor_produtos', 'taxa_entrega', 'valor_total', 'mercado_pago_id')
-    
-    # Organiza a visualização do pedido individual para ser direta e limpa
+    readonly_fields = (
+        'criado_em', 
+        'nome_cliente', 
+        'telefone_cliente', 
+        'endereco_completo', 
+        'payload_itens', 
+        'valor_produtos', 
+        'taxa_entrega', 
+        'valor_total', 
+        'mercado_pago_id'
+    )
+
     fieldsets = (
         ('Status do Pedido', {
             'fields': ('status', 'criado_em')
@@ -132,7 +148,7 @@ class PedidoAdmin(admin.ModelAdmin):
         ('Informações do Cliente', {
             'fields': ('nome_cliente', 'telefone_cliente', 'endereco_completo')
         }),
-        ('Detalhes do Consumo e Pagamento', {
+        ('Detalhes da Compra e Pagamento', {
             'fields': ('payload_itens', 'valor_produtos', 'taxa_entrega', 'valor_total', 'mercado_pago_id')
         }),
     )
