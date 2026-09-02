@@ -1,4 +1,6 @@
 from django.db import models
+from cloudinary.models import CloudinaryField
+
 
 class Categoria(models.Model):
     nome = models.CharField(max_length=100)
@@ -16,15 +18,23 @@ class Categoria(models.Model):
 
 class ItemAdicional(models.Model):
     nome = models.CharField(max_length=100)
-    imagem_url = models.URLField(
+    imagem = CloudinaryField(
+        'imagem', 
         blank=True, 
-        help_text="URL da imagem no Cloudinary (opcional). Recomendado: foto quadrada (1:1)."
+        null=True, 
+        help_text="Faça upload da imagem diretamente para o Cloudinary ou selecione da sua mídia."
     )
 
     class Meta:
         verbose_name = 'Item Adicional'
         verbose_name_plural = 'Itens Adicionais'
         ordering = ['nome']
+
+    @property
+    def imagem_url(self):
+        if self.imagem:
+            return self.imagem.url
+        return ""
 
     def __str__(self):
         return self.nome
@@ -88,12 +98,23 @@ class Produto(models.Model):
     )
     eh_combo = models.BooleanField(default=False, help_text="Marque se for um combo promocional")
     grupos_opcoes = models.ManyToManyField(GrupoOpcao, blank=True)
-    imagem_url = models.URLField(blank=True, help_text="URL da foto principal do produto no Cloudinary")
+    imagem = CloudinaryField(
+        'imagem', 
+        blank=True, 
+        null=True, 
+        help_text="Faça upload da imagem principal do produto no Cloudinary."
+    )
     ativo = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = 'Produto'
         verbose_name_plural = 'Produtos'
+
+    @property
+    def imagem_url(self):
+        if self.imagem:
+            return self.imagem.url
+        return ""
 
     def __str__(self):
         return f"{self.nome} - R$ {self.preco_base}"
