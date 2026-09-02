@@ -2,14 +2,13 @@ from django.contrib import admin
 from .models import Categoria, ItemAdicional, GrupoOpcao, ItemGrupoOpcao, Produto, Pedido
 
 
-# Alterado de StackedInline para TabularInline (formato de tabela compacta)
-class ItemGrupoOpcaoInline(admin.TabularInline):
+# StackedInline garante 100% de responsividade no celular
+class ItemGrupoOpcaoInline(admin.StackedInline):
     model = ItemGrupoOpcao
     extra = 1
     autocomplete_fields = ['item']
     verbose_name = "Item"
-    verbose_name_plural = "Itens do Grupo"
-    # Define as colunas exatas da tabela
+    verbose_name_plural = "Itens deste Grupo"
     fields = ('item', 'preco_especifico')
 
 
