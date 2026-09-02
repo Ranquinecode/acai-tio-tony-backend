@@ -10,11 +10,14 @@ from .serializers import (
     PedidoSerializer
 )
 
+
 class CategoriaViewSet(viewsets.ReadOnlyModelViewSet):
-    # Prefetch encadeado até os subgrupos (grupos_filhos) para evitar N+1 queries
+    # Prefetch encadeado de subgrupos (grupos_filhos) e de itens de combo para máxima velocidade
     queryset = Categoria.objects.filter(ativo=True).prefetch_related(
         'produtos__grupos_opcoes__itens_relacionados__item',
-        'produtos__grupos_opcoes__itens_relacionados__grupos_filhos__itens_relacionados__item'
+        'produtos__grupos_opcoes__itens_relacionados__grupos_filhos__itens_relacionados__item',
+        'produtos__itens_combo__produto_conteudo__grupos_opcoes__itens_relacionados__item',
+        'produtos__itens_combo__produto_conteudo__grupos_opcoes__itens_relacionados__grupos_filhos__itens_relacionados__item'
     ).order_by('ordem')
     serializer_class = CategoriaSerializer
 
@@ -22,7 +25,9 @@ class CategoriaViewSet(viewsets.ReadOnlyModelViewSet):
 class ProdutoViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Produto.objects.filter(ativo=True).prefetch_related(
         'grupos_opcoes__itens_relacionados__item',
-        'grupos_opcoes__itens_relacionados__grupos_filhos__itens_relacionados__item'
+        'grupos_opcoes__itens_relacionados__grupos_filhos__itens_relacionados__item',
+        'itens_combo__produto_conteudo__grupos_opcoes__itens_relacionados__item',
+        'itens_combo__produto_conteudo__grupos_opcoes__itens_relacionados__grupos_filhos__itens_relacionados__item'
     )
     serializer_class = ProdutoSerializer
 
