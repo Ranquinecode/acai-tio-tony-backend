@@ -100,7 +100,7 @@ CLOUDINARY_STORAGE = {
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-# Configuração do WhiteNoise sem travamento por arquivos .map ausentes do AdminLTE
+# Desativa o pós-processamento/compactação do WhiteNoise que travava nos arquivos do Jazzmin
 STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
 
 # Personalização Visual do Jazzmin (Admin Açaí do Tio Tony)
