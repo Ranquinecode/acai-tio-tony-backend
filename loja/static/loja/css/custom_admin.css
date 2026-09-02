@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Correção de Responsividade para Autocomplete / Select2 no Django Admin Mobile
+   Responsividade do Autocomplete / Select2 no Mobile
    ========================================================================== */
 
 .select2-container {
@@ -22,7 +22,6 @@
     padding-right: 20px !important;
 }
 
-/* Garante que tabelas inlines não espremam as colunas no celular */
 @media (max-width: 768px) {
     .inline-group td.field-item {
         min-width: 160px !important;
@@ -35,79 +34,79 @@
 }
 
 /* ==========================================================================
-   Destaque Visual e Usabilidade dos Cards de Itens (Grupo de Opções)
+   Estilo Limpo e Sem Excesso de Bordas
    ========================================================================== */
 
-/* Card de cada item com fundo levemente destacado e borda bem nítida */
+/* Bloco do item: Sem bordas pesadas, apenas fundo sutil para separar um item do outro */
 .inline-group .inline-related {
-    background-color: #f8f9fa !important;
-    border: 2px solid #d1d5db !important;
+    background-color: #f9fafb !important;
+    border: none !important;
     border-radius: 8px !important;
-    padding: 12px 16px !important;
+    padding: 14px 16px !important;
     margin-bottom: 12px !important;
 }
 
-/* Cabeçalho do Card (ex: Item #1 / Opção) */
+/* Título de cada item (ex: Item #1): Limpo e sem linhas divisórias */
 .inline-group .inline-related > h3 {
-    background: #e5e7eb !important;
-    color: #1f2937 !important;
-    font-size: 0.95rem !important;
-    font-weight: 700 !important;
-    border-bottom: 1px solid #d1d5db !important;
-    margin-bottom: 10px !important;
-    padding: 6px 10px !important;
-    border-radius: 4px !important;
+    background: transparent !important;
+    color: #374151 !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    border: none !important;
+    margin-bottom: 8px !important;
+    padding: 0 !important;
 }
 
-/* DESTAQUE DO CAMPO SELECIONÁVEL DE ITEM (Select2 / Autocomplete) */
+/* CAMPO DE SELEÇÃO DO ITEM: Borda simples de 1px apenas para dar a noção do clique */
 .inline-group .select2-container--adminlite .select2-selection--single,
 .inline-group .select2-container--default .select2-selection--single,
 .inline-group .select2-container .select2-selection--single {
     background-color: #ffffff !important;
-    border: 2px solid #6b7280 !important; /* Borda cinza bem visível para separar do fundo */
+    border: 1px solid #d1d5db !important; /* Borda leve de 1px */
     border-radius: 6px !important;
-    min-height: 42px !important;
+    min-height: 40px !important;
+    box-shadow: none !important;
 }
 
-/* Destaque quando o campo de seleção está em foco/clicado */
+/* Efeito sutil ao clicar no campo de seleção */
 .inline-group .select2-container--adminlite.select2-container--focus .select2-selection--single,
 .inline-group .select2-container--open .select2-selection--single {
-    border-color: #4f46e5 !important; /* Borda destaque ao clicar */
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2) !important;
+    border-color: #6366f1 !important;
 }
 
-/* Estilização para os campos de entrada (Preço Específico, Textos, etc.) */
+/* CAMPO DE PREÇO ESPECÍFICO: Segue a mesma linha simples de 1px */
 .inline-group input[type="number"],
 .inline-group input[type="text"] {
     background-color: #ffffff !important;
-    border: 2px solid #6b7280 !important;
+    border: 1px solid #d1d5db !important;
     border-radius: 6px !important;
     padding: 8px 12px !important;
-    min-height: 40px !important;
+    min-height: 38px !important;
     width: 100% !important;
     max-width: 300px !important;
+    box-shadow: none !important;
 }
 
-/* Rótulos (Labels) dos campos bem legíveis */
+/* Rótulos (Labels): Diretos e discretos */
 .inline-group label {
-    font-weight: 700 !important;
-    color: #111827 !important;
+    font-weight: 600 !important;
+    color: #4b5563 !important;
+    font-size: 0.875rem !important;
     margin-bottom: 4px !important;
     display: block !important;
 }
 
-/* Botão de Apagar com destaque claro em tom de alerta */
+/* Botão de Apagar: Discreto no canto direito */
 .inline-group .delete {
     float: right !important;
-    background: #fee2e2 !important;
-    border: 1px solid #fca5a5 !important;
-    padding: 4px 10px !important;
-    border-radius: 6px !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
 }
 
 .inline-group .delete label {
-    color: #991b1b !important;
-    font-weight: 700 !important;
-    margin: 0 !important;
+    color: #ef4444 !important;
+    font-weight: 500 !important;
+    font-size: 0.85rem !important;
     cursor: pointer !important;
 }
